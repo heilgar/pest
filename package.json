@@ -1,0 +1,18 @@
+{
+  "name": "pest-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Prompt Evaluation & Scoring Toolkit - Monorepo",
+  "scripts": {
+    "build": "pnpm --filter pest build",
+    "dev": "pnpm --filter pest dev",
+    "test": "pnpm --filter pest test",
+    "lint": "pnpm --filter pest lint",
+    "docs:dev": "pnpm --filter @pest/docs dev",
+    "docs:build": "pnpm --filter @pest/docs build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "packageManager": "pnpm@10.26.2"
+}
