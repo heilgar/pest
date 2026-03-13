@@ -1,0 +1,53 @@
+{
+  "name": "pest",
+  "version": "0.0.1",
+  "description": "Prompt Evaluation & Scoring Toolkit - Lightweight LLM prompt testing framework",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "bin": {
+    "pest": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest",
+    "lint": "tsc --noEmit"
+  },
+  "keywords": [
+    "llm",
+    "prompt",
+    "testing",
+    "evaluation",
+    "ai",
+    "openai",
+    "anthropic",
+    "gemini",
+    "grok",
+    "tool-calling"
+  ],
+  "license": "MIT",
+  "packageManager": "pnpm@10.26.2",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.78.0",
+    "@google/genai": "^1.45.0",
+    "citty": "^0.2.1",
+    "openai": "^6.29.0",
+    "valibot": "^1.2.0",
+    "yaml": "^2.8.2"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
+  }
+}
