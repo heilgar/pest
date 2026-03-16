@@ -1,72 +1,264 @@
+::: danger OUTDATED
+This page is outdated and does not reflect the current architecture. See [Architecture](/architecture/packages) and [Matchers](/architecture/matchers) for the current documentation.
+:::
+
 # API Reference
 
-## Test API
+## Package overview
 
-### `describe(name, options, fn)`
+| Package | Purpose |
+|---------|---------|
+| `@heilgar/pest-core` | Providers, config, `send()`, matchers logic, evaluators, tuner, cache |
+| `@heilgar/pest-vitest` | vitest plugin + `expect.extend()` matchers |
+| `@heilgar/pest-jest` | jest `expect.extend()` matchers + setup |
+| `@heilgar/pest-cli` | CLI: `compare`, `qa`, `tune`, `install` |
+| `pest` | Meta-package: re-exports `@heilgar/pest-core` + `@heilgar/pest-vitest` |
+
+---
+
+## @heilgar/pest-vitest
+
+Primary import for vitest-based test files.
+
+### `send(provider, message, options?)`
+
+Send a message to an LLM provider and get a `PestResponse`.
 
 ```typescript
-import { describe } from 'pest';
+import { send } from '@heilgar/pest-vitest';
 
-describe('Suite Name', {
-  systemPrompt: string;             // Required
-  tools?: ToolDefinition[];          // Optional
-  providers?: string[];              // Optional: limit to specific providers
-  judge?: { provider?: string };     // Optional: override judge
-  temperature?: number;              // Optional
-}, () => {
-  // tests
+const res = await send(provider, 'user message', {
+  systemPrompt?: string;
+  tools?: ToolDefinition[];
+  temperature?: number;
 });
 ```
 
-### `test(name, fn, options?)`
+### `createProvider(config)`
+
+Create a provider instance.
 
 ```typescript
-import { test } from 'pest';
+import { createProvider } from '@heilgar/pest-vitest';
 
-test('test name', async ({ send, conversation }) => {
-  const res = await send('message');
-  expect(res).toContain('expected');
-}, { timeout: 30_000 });
-```
-
-### `test.each(cases)`
-
-```typescript
-test.each([
-  { input: 'Refund #123', tool: 'process_refund' },
-  { input: 'Check #456', tool: 'check_order' },
-])('$input calls $tool', async ({ send }, { input, tool }) => {
-  const res = await send(input);
-  expect(res).toCallTool(tool);
+const provider = createProvider({
+  name: string;
+  type: 'openai' | 'anthropic' | 'gemini' | 'xai' | 'ollama';
+  model: string;
+  apiKey?: string;
+  baseUrl?: string;
+  temperature?: number;
 });
 ```
 
-### `test.skip(name, fn)` / `test.only(name, fn)`
+### `getProvider(name)`
 
-Skip or isolate tests.
-
-### Lifecycle hooks
+Resolve a provider defined in `pest.config.ts` by name.
 
 ```typescript
-beforeAll(async () => {});
-afterAll(async () => {});
-beforeEach(async () => {});
-afterEach(async ({ result }) => {});
+import { getProvider } from '@heilgar/pest-vitest';
+
+const provider = getProvider('gpt-4o');
 ```
 
-## Test Context
+### `setJudgeProvider(provider)`
 
-The callback receives a context object:
+Override the judge provider for the current test file.
 
 ```typescript
-interface TestContext {
-  send(message: string): Promise<PestResponse>;
-  conversation(messages: Message[]): Promise<void>;
-  provider: string;  // Current provider name
-}
+import { setJudgeProvider } from '@heilgar/pest-vitest';
+
+setJudgeProvider(provider);
 ```
 
-## `PestResponse`
+### `pestPlugin(options?)`
+
+vitest plugin. Import in `vitest.config.ts`.
+
+```typescript
+import { pestPlugin } from '@heilgar/pest-vitest/plugin';
+
+// vitest.config.ts
+export default defineConfig({
+  plugins: [pestPlugin({ config: './pest.config.ts' })],
+});
+```
+
+---
+
+## @heilgar/pest-jest
+
+For jest-based test files.
+
+### Setup
+
+```typescript
+// jest.config.ts
+export default {
+  setupFilesAfterFramework: ['@heilgar/pest-jest/setup'],
+};
+```
+
+### Exports
+
+`send`, `createProvider`, `getProvider`, `setJudgeProvider` — same signatures as `@heilgar/pest-vitest`.
+
+---
+
+## @heilgar/pest-core
+
+Lower-level API. Used by the vitest/jest packages and directly for programmatic use.
+
+### `defineConfig(config)`
+
+```typescript
+import { defineConfig } from '@heilgar/pest-core';
+
+export default defineConfig({
+  providers: ProviderConfig[];
+  judge?: {
+    provider: string;
+    temperature?: number;
+    threshold?: number;
+  };
+  limits?: {
+    concurrency?: number;
+    requestsPerMinute?: number;
+    timeout?: number;
+  };
+  cache?: {
+    enabled?: boolean;
+    ttl?: number;
+  };
+  prompts?: {
+    judge?: string;
+    similarity?: string;
+    qa?: string;
+    optimizer?: string;
+    compressor?: string;
+  };
+});
+```
+
+### `createProvider(config)` / `getProvider(name)`
+
+Same as the vitest package — re-exported from core.
+
+### `send(provider, message, options?)`
+
+Same as the vitest package — re-exported from core.
+
+### Prompts API
+
+```typescript
+import { setPrompts, getPrompts, resetPrompts, defaultPrompts } from '@heilgar/pest-core';
+
+// Override pest's internal prompts
+setPrompts({ judge: 'Your custom judge prompt...' });
+
+// Get currently active prompts
+const prompts = getPrompts();
+
+// Restore defaults
+resetPrompts();
+
+// Extend rather than replace
+setPrompts({
+  judge: `${defaultPrompts.judge}\n\nBe strict about factual accuracy.`,
+});
+```
+
+### `pestMatchers`
+
+The raw matcher object for manual `expect.extend()` registration.
+
+```typescript
+import { pestMatchers } from '@heilgar/pest-core';
+
+expect.extend(pestMatchers);
+```
+
+### `generateTestCases(provider, systemPrompt, options?)`
+
+Generate test cases using LLM-as-QA.
+
+```typescript
+import { generateTestCases } from '@heilgar/pest-core';
+
+const cases = await generateTestCases(provider, SYSTEM_PROMPT, {
+  categories: ['happy_path', 'edge_cases', 'adversarial'],
+  count: 10,
+  tools: myTools,
+});
+```
+
+### `optimizePrompt(tuner, prompt, testFn, provider, options?)`
+
+Iteratively optimize a prompt.
+
+```typescript
+import { optimizePrompt } from '@heilgar/pest-core';
+
+const result = await optimizePrompt(tuner, originalPrompt, testFn, provider, {
+  maxIterations: 5,
+  variants: 3,
+});
+
+result.best.prompt;    // Best optimized prompt
+result.best.passRate;  // Pass rate achieved
+result.improved;       // Whether improvement was found
+```
+
+### `compressPrompt(compressor, prompt, testFn, provider, options?)`
+
+Compress a prompt while maintaining test pass rate.
+
+```typescript
+import { compressPrompt } from '@heilgar/pest-core';
+
+const result = await compressPrompt(compressor, originalPrompt, testFn, provider, {
+  targetReduction: 0.3,
+  minPassRate: 1,
+});
+
+result.compressed.prompt;
+result.reductionPercent;
+result.passRateMaintained;
+```
+
+### `buildComparisonTable(results)`
+
+Build a ranked comparison from `send()` results across providers.
+
+```typescript
+import { buildComparisonTable } from '@heilgar/pest-core';
+
+const stats = buildComparisonTable(results);
+// [{ provider, passed, failed, total, passRate, avgDurationMs }]
+```
+
+### `buildJsonReport(results)` / `formatJsonReport(results)`
+
+```typescript
+import { buildJsonReport, formatJsonReport } from '@heilgar/pest-core';
+
+const report = buildJsonReport(results);
+const json = formatJsonReport(results);   // Pretty-printed JSON string
+```
+
+### `buildHtmlReport(results)`
+
+```typescript
+import { buildHtmlReport } from '@heilgar/pest-core';
+
+const html = buildHtmlReport(results);
+```
+
+---
+
+## Types
+
+### `PestResponse`
 
 Returned by `send()`:
 
@@ -80,181 +272,30 @@ interface PestResponse {
     totalTokens: number;
   };
   latencyMs: number;
-  raw: unknown;
+  provider: string;
+  model: string;
 }
+```
 
+### `ToolCall`
+
+```typescript
 interface ToolCall {
   name: string;
   arguments: Record<string, unknown>;
-  id?: string;
 }
 ```
-
-## Matchers
-
-### Text
-
-```typescript
-expect(res).toContain(substring: string, options?: { caseSensitive?: boolean })
-expect(res).toMatch(pattern: RegExp)
-expect(res).toEqual(expected: string)
-expect(res).toMatchSchema(schema: JSONSchema)
-expect(res).toHaveLength(options: { min?: number; max?: number })
-```
-
-### Tool calls
-
-```typescript
-expect(res).toCallTool(name: string)
-expect(res).toCallAnyTool()
-expect(res).toCallToolWith(name: string, args: Record<string, unknown>)
-expect(res).toCallToolWithMatch(name: string, partial: Record<string, unknown>)
-expect(res).toCallToolWithSchema(name: string, schema: JSONSchema)
-expect(res).toHaveToolCallCount(count: number, tool?: string)
-expect(res).toCallToolsInOrder(names: string[], options?: { strict?: boolean })
-expect(res).toCallToolAtIndex(index: number, name: string, args?: Record<string, unknown>)
-```
-
-### Judge (async)
-
-```typescript
-await expect(res).toPassJudge(
-  criteria: string | string[],
-  options?: { threshold?: number; provider?: string }
-)
-await expect(res).toBeSemanticallySimilar(
-  expected: string,
-  options?: { threshold?: number }
-)
-```
-
-### Metadata
-
-```typescript
-expect(res).toRespondWithin(ms: number)
-expect(res).toCostLessThan(dollars: number)
-```
-
-### Negation
-
-All matchers support `.not`:
-
-```typescript
-expect(res).not.toCallTool('delete_account')
-expect(res).not.toCallAnyTool()
-expect(res).not.toContain('error')
-```
-
-## Configuration API
-
-### `defineConfig(config)`
-
-```typescript
-import { defineConfig } from 'pest';
-
-export default defineConfig({
-  providers: ProviderConfig[];
-  judge?: JudgeConfig;
-  qa?: QAConfig;
-  tuner?: TunerConfig;
-  limits?: LimitsConfig;
-  cache?: CacheConfig;
-  reporter?: ReporterConfig;
-  tests?: { pattern?: string };
-});
-```
-
-### `defineProvider(provider)`
-
-Register a custom provider:
-
-```typescript
-import { defineProvider } from 'pest';
-
-const myProvider = defineProvider({
-  name: 'my-llm',
-  async complete(request) {
-    return { text: '', toolCalls: [], usage: { ... }, latencyMs: 0, raw: null };
-  },
-});
-```
-
-## Programmatic API
-
-### `pest.run(options)`
-
-```typescript
-import { run } from 'pest';
-
-const results = await run({
-  tests: './tests/',
-  providers: ['gpt-4o'],
-});
-
-results.summary; // { total, passed, failed, avgScore }
-```
-
-### `pest.compare(options)`
-
-```typescript
-import { compare } from 'pest';
-
-const results = await compare({
-  tests: './tests/support.pest.ts',
-  providers: ['gpt-4o', 'claude-sonnet'],
-  tag: 'v2',
-});
-
-results.rankings; // ProviderRanking[]
-```
-
-### `pest.qa(options)`
-
-```typescript
-import { qa } from 'pest';
-
-const results = await qa({
-  systemPrompt: PROMPT,
-  tools: TOOLS,
-  behavior: '...',
-  cases: 20,
-});
-
-results.weakSpots; // string[]
-```
-
-### `pest.tune(options)`
-
-```typescript
-import { tune } from 'pest';
-
-const results = await tune({
-  tests: './tests/support.pest.ts',
-  iterations: 5,
-  compress: true,
-});
-
-results.optimized;  // { prompt, tokens, score }
-results.compressed; // { prompt, tokens, score }
-```
-
-## Types
 
 ### `ToolDefinition`
 
 ```typescript
 interface ToolDefinition {
-  name: string;
-  description: string;
-  parameters: Record<string, ParameterDefinition>;
-}
-
-interface ParameterDefinition {
-  type: string;
-  required?: boolean;
-  description?: string;
-  enum?: string[];
-  items?: ParameterDefinition;
+  type: 'function';
+  function: {
+    name: string;
+    description?: string;
+    parameters?: Record<string, unknown>;
+  };
 }
 ```
 
@@ -268,15 +309,29 @@ interface ProviderConfig {
   apiKey?: string;
   baseUrl?: string;
   temperature?: number;
-  maxTokens?: number;
 }
 ```
 
-### `Message`
+### `GeneratedTestCase`
 
 ```typescript
-interface Message {
-  role: 'user' | 'assistant' | 'system';
-  content: string;
+interface GeneratedTestCase {
+  name: string;
+  message: string;
+  category: 'happy_path' | 'edge_cases' | 'adversarial' | 'tool_misuse' | 'refusal';
+  criteria: string;
+  expectedTools?: string[];
+}
+```
+
+### `PestPrompts`
+
+```typescript
+interface PestPrompts {
+  judge: string;
+  similarity: string;
+  qa: string;
+  optimizer: string;
+  compressor: string;
 }
 ```

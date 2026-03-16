@@ -1,0 +1,14 @@
+/* Extension block: no extra wrapper styling needed — content renders inline */
+.extension-block {
+  display: contents;
+}
+
+/* Subtle transition when extension blocks swap in/out */
+.extension-block > * {
+  animation: extension-fade-in 0.15s ease;
+}
+
+@keyframes extension-fade-in {
+  from { opacity: 0.4; }
+  to   { opacity: 1; }
+}
