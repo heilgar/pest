@@ -249,7 +249,7 @@ const prompt = useSystemPrompt("You are a helpful assistant.");
 // returns PEST_SYSTEM_PROMPT if set, otherwise the default string
 ```
 
-Used by `pest optimize` and `pest compress` to swap prompts between iterations without modifying test files.
+Useful for scripts or CI pipelines that need to test different prompts without modifying test files.
 
 ## Tool Definitions
 

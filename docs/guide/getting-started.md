@@ -530,7 +530,7 @@ export default defineConfig({
 
 <ExtensionBlock :extensions="['vitest', 'jest']">
 
-`useProvider()` and `useSystemPrompt()` are helpers for vitest and jest tests that let the CLI (`pest compare`, `pest optimize`, `pest compress`) swap providers and prompts via environment variables. They are not applicable to Playwright tests.
+`useProvider()` and `useSystemPrompt()` are helpers for vitest and jest tests that resolve providers and prompts from environment variables (`PEST_PROVIDER`, `PEST_SYSTEM_PROMPT`). Useful for CI pipelines or scripts that need to test with different providers/prompts without modifying test files.
 
 ::: code-group
 
@@ -577,4 +577,4 @@ When running vitest or jest directly, these helpers use defaults from config. Wh
 - [Configuration](/guide/configuration) — full config reference
 - [Examples](/guide/examples) — real-world testing patterns
 - [Matchers](/architecture/matchers) — complete matcher reference
-- [CLI](/reference/cli) — compare, qa, optimize, compress commands
+- [CLI](/reference/cli) — compare, optimize, compress commands

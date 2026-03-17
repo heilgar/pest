@@ -161,13 +161,9 @@ The `ollama` provider type works with any server that implements the OpenAI chat
 
 ## Mixing local and cloud
 
-A common pattern: test against a local model for fast iteration, then validate with a cloud model before merging. Use the CLI to compare:
+A common pattern: test against a local model for fast iteration, then validate with a cloud model before merging.
 
-```bash
-pest compare --test tests/ --providers llama,gpt4o
-```
-
-Or in your config, define both:
+In your config, define both:
 
 ```ts
 export default defineConfig({

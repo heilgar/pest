@@ -1,0 +1,34 @@
+{
+  "name": "@pest/demo",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Demo project — Acme Store chat agent with pest test examples",
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/server.ts",
+    "test": "vitest run",
+    "test:vitest": "vitest run",
+    "test:vitest:unit": "vitest run tests/vitest/unit",
+    "test:vitest:integration": "vitest run tests/vitest/integration",
+    "test:jest": "NODE_OPTIONS='--experimental-vm-modules' npx jest",
+    "test:jest:unit": "NODE_OPTIONS='--experimental-vm-modules' npx jest tests/jest/unit",
+    "test:jest:integration": "NODE_OPTIONS='--experimental-vm-modules' npx jest tests/jest/integration",
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed --workers=1",
+    "test:e2e:ui": "playwright test --ui"
+  },
+  "devDependencies": {
+    "@heilgar/pest-core": "workspace:*",
+    "@heilgar/pest-vitest": "workspace:*",
+    "@heilgar/pest-jest": "workspace:*",
+    "@heilgar/pest-playwright": "workspace:*",
+    "@playwright/test": "^1.52.0",
+    "jest": "^29.7.0",
+    "@jest/globals": "^29.7.0",
+    "ts-jest": "^29.3.4",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "valibot": "^1.2.0",
+    "vitest": "^4.1.0"
+  }
+}

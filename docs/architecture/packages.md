@@ -7,7 +7,7 @@ pest is split into focused packages with clear boundaries.
 @heilgar/pest-vitest       — vitest expect.extend() matchers
 @heilgar/pest-jest         — jest expect.extend() matchers
 @heilgar/pest-playwright   — Playwright expect.extend() matchers (LLM-judged only)
-@heilgar/pest-cli          — CLI tools (compare, qa, optimize, compress, install)
+@heilgar/pest-cli          — CLI tools (install agents & skills)
 ```
 
 ## Core (`@heilgar/pest-core`)
@@ -82,17 +82,13 @@ await expect(page.locator('.ai-response')).toNotDisclose("system prompt");
 
 ## CLI (`@heilgar/pest-cli`)
 
-Standalone tool for operations that don't belong in unit tests:
+Project setup tool:
 
 | Command | Description |
 |---|---|
-| `pest compare` | Run same prompt across multiple providers, compare outputs |
-| `pest qa` | Generate test cases from prompts using LLM |
-| `pest optimize` | Improve prompt pass rate by generating and testing variants |
-| `pest compress` | Reduce prompt token count while maintaining quality |
-| `pest install` | Set up pest in an existing project |
+| `pest install` | Install Claude Code agents and skills for pest |
 
-CLI shells out to vitest or jest for test execution — it does not have its own runner. It controls providers and prompts via environment variables (`PEST_PROVIDER`, `PEST_SYSTEM_PROMPT`).
+The CLI installs agent templates (test writer, test healer) and a skill (test generator) into `.claude/`. Tests are run directly via vitest or jest — the CLI does not have its own runner.
 
 ## Dependency Graph
 
