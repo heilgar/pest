@@ -67,9 +67,6 @@ export default defineConfig({
     },
   },
 
-  // CLI-specific settings
-  testMatch: ["**/*.pest.ts", "**/*.pest.js"], // file patterns for CLI
-  workers: 2, // parallel workers for CLI commands
 });
 ```
 
@@ -139,7 +136,7 @@ await expect(res).toMatchSemanticMeaning("expected", {
 
 ## Using config in tests
 
-The config file is primarily used by the CLI. In vitest/jest tests, you typically create providers directly:
+The config file is optional. In tests, you can create providers directly:
 
 ```ts
 import { createProvider } from "@heilgar/pest-core";

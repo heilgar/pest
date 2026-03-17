@@ -140,6 +140,25 @@ pest-log.json
 pest-report.html
 ```
 
+## Pest Reporter (jest)
+
+Same capabilities as the vitest reporter. Requires `--runInBand` (the in-memory accumulator needs tests and reporter in the same process — typical for LLM tests anyway).
+
+### Setup
+
+```js
+// jest.config.js
+export default {
+  setupFilesAfterFramework: ['@heilgar/pest-jest/setup'],
+  reporters: [
+    'default',
+    ['@heilgar/pest-jest/reporter', { showCost: true }],
+  ],
+};
+```
+
+Same options as the vitest reporter: `verbose`, `showCost`, `logFile`, `htmlFile`.
+
 ## Default test runner output
 
 pest matchers work with any vitest/jest/Playwright reporter. Without the pest reporter, you still get clear error messages on failures:
