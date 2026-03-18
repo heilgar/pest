@@ -37,6 +37,14 @@ export default defineConfig({
         transport: 'http',
         url: 'http://localhost:3000/mcp',
       },
+      // HTTP with authentication headers
+      authenticated: {
+        transport: 'http',
+        url: 'http://localhost:3000/mcp',
+        headers: {
+          Authorization: `Bearer ${process.env.MCP_TOKEN}`,
+        },
+      },
     },
   },
 });

@@ -130,6 +130,22 @@ export default defineConfig({
 
 Pricing is used by reporters to estimate cost.
 
+### Transport options
+
+Both `sse` and `http` transports accept optional `headers` for authentication:
+
+```typescript
+{
+  transport: 'http',
+  url: 'http://localhost:3000/mcp',
+  headers: {
+    Authorization: `Bearer ${process.env.MCP_TOKEN}`,
+  },
+}
+```
+
+Headers are passed to the underlying transport's `requestInit.headers`. Use this to connect to OAuth-protected MCP servers (Clerk, Auth0, etc.).
+
 ## Judge resolution
 
 When an LLM-judged matcher runs, the judge provider is resolved in this order:
