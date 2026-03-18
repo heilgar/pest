@@ -1,6 +1,6 @@
 {
   "name": "@heilgar/pest-core",
-  "version": "0.0.2",
+  "version": "0.0.5",
   "description": "Prompt Evaluation & Scoring Toolkit - Core library",
   "type": "module",
   "main": "./dist/index.js",
