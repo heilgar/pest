@@ -7,7 +7,8 @@ pest is split into focused packages with clear boundaries.
 @heilgar/pest-vitest       — vitest expect.extend() matchers
 @heilgar/pest-jest         — jest expect.extend() matchers
 @heilgar/pest-playwright   — Playwright expect.extend() matchers (LLM-judged only)
-@heilgar/pest-cli          — CLI tools (install agents & skills)
+@heilgar/pest-mcp          — MCP server testing (discovery, tool execution, LLM+MCP e2e)
+@heilgar/pest-cli          — CLI tools (install, qa)
 ```
 
 ## Core (`@heilgar/pest-core`)
@@ -90,6 +91,19 @@ Project setup tool:
 
 The CLI installs agent templates (test writer, test healer) and a skill (test generator) into `.claude/`. Tests are run directly via vitest or jest — the CLI does not have its own runner.
 
+## MCP (`@heilgar/pest-mcp`)
+
+MCP server testing — a peer package alongside the test framework extensions.
+
+| Responsibility | Description |
+|---|---|
+| **MCP client** | Connect to MCP servers via stdio or SSE/HTTP |
+| **Server testing** | Matchers for tool discovery, schema validation, prompts, resources |
+| **LLM+MCP bridge** | `sendWithMcp()` auto-bridges LLM providers to MCP server tools |
+| **CLI QA** | Smoke test logic for `pest qa --mcp` |
+
+See [MCP Extension](/extensions/mcp) for usage.
+
 ## Dependency Graph
 
 ```
@@ -99,7 +113,11 @@ The CLI installs agent templates (test writer, test healer) and a skill (test ge
                             │
 @heilgar/pest-playwright  ──┤          ▲
                             │          │
+@heilgar/pest-mcp         ──┤          │
+       │                    │          │
+       └── @mcp/sdk         │          │
+                            │          │
 @heilgar/pest-cli         ──┘──────────┘
 ```
 
-No circular dependencies. Core knows nothing about its consumers.
+No circular dependencies. Core knows nothing about its consumers. The MCP package is a peer to the test framework extensions — they don't depend on each other.

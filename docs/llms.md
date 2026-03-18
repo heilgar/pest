@@ -19,9 +19,16 @@ This document is a table of contents for LLMs helping users write tests with pes
 
 ### Matchers
 - **[Matchers](/architecture/matchers)** — Complete matcher reference:
-  - **Deterministic**: `toContainToolCall()`, `toCallToolsInOrder()`, `toMatchResponseSchema()`, `toRespondWithinTokens()`, `toHaveToolCallCount()`, `toContainText()`
+  - **Deterministic**: `toContainToolCall()`, `toCallToolsInOrder()`, `toMatchResponseSchema()`, `toRespondWithinTokens()`, `toHaveToolCallCount()`, `toContainText()`, `toNotContainText()`
   - **LLM-judged**: `toMatchSemanticMeaning()`, `toSatisfyCriteria()`, `toBeClassifiedAs()`, `toNotDisclose()`
+  - **MCP** (from `@heilgar/pest-mcp`): `toExposeTools()`, `toExposeTool()`, `toExposePrompts()`, `toExposeResources()`, `toHaveValidToolSchemas()`
   - **Standalone**: `assertConsistent()`
+
+### Extensions
+- **[Vitest](/extensions/vitest)** — vitest setup, plugin, reporter
+- **[Jest](/extensions/jest)** — jest setup, reporter
+- **[Playwright](/extensions/playwright)** — Playwright LLM-judged matchers for locators/strings
+- **[MCP](/extensions/mcp)** — MCP server testing: discovery, tool execution, LLM+MCP e2e
 
 ### Examples & Patterns
 - **[Examples](/guide/examples)** — Real-world testing patterns:
@@ -40,7 +47,7 @@ This document is a table of contents for LLMs helping users write tests with pes
 - **[Configuration Reference](/reference/configuration)** — Complete config schema
 
 ### CLI
-- **[CLI Reference](/reference/cli)** — `compare`, `qa`, `optimize`, `compress`, `install` commands
+- **[CLI Reference](/reference/cli)** — `pest install`, `pest qa --mcp` commands
 
 ### Architecture
 - **[Core API](/architecture/core-api)** — Internal architecture of pest-core
@@ -56,7 +63,8 @@ This document is a table of contents for LLMs helping users write tests with pes
 | `packages/vitest` | `@heilgar/pest-vitest` | vitest plugin + matchers + reporter (alias: `pest`) |
 | `packages/jest` | `@heilgar/pest-jest` | jest matchers + setup |
 | `packages/playwright` | `@heilgar/pest-playwright` | Playwright LLM-judged matchers for locators/strings |
-| `packages/cli` | `@heilgar/pest-cli` | CLI binary for `compare`, `qa`, `optimize`, `compress` |
+| `packages/mcp` | `@heilgar/pest-mcp` | MCP server testing: `useMcpServer()`, `sendWithMcp()`, discovery matchers |
+| `packages/cli` | `@heilgar/pest-cli` | CLI: `pest install`, `pest qa --mcp` |
 
 ---
 
@@ -82,3 +90,12 @@ This document is a table of contents for LLMs helping users write tests with pes
 
 ### How do I configure vitest/jest/playwright?
 → See [Getting Started](/guide/getting-started) for setup instructions per test runner
+
+### How do I test an MCP server?
+→ See [MCP Extension](/extensions/mcp) for `useMcpServer()`, `sendWithMcp()`, and discovery matchers
+
+### How do I configure MCP servers?
+→ Add `mcp.servers` to `pest.config.ts`. See [Configuration](/reference/configuration) and [MCP Extension](/extensions/mcp)
+
+### How do I run a quick MCP server check?
+→ `pest qa --mcp <serverName>`. See [CLI Reference](/reference/cli)

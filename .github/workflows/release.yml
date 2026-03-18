@@ -40,6 +40,8 @@ jobs:
             cd packages/core
             pnpm publish --access public --no-git-checks --provenance
           fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       # Publish remaining packages (vitest, jest, playwright, cli)
       - name: Publish dependent packages
@@ -56,3 +58,5 @@ jobs:
               (cd "$dir" && pnpm publish --access public --no-git-checks --provenance)
             fi
           done
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
