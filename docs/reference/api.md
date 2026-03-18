@@ -8,7 +8,8 @@
 | `@heilgar/pest-vitest` | vitest plugin + `expect.extend()` matchers + reporter |
 | `@heilgar/pest-jest` | jest `expect.extend()` matchers + setup |
 | `@heilgar/pest-playwright` | Playwright `expect.extend()` matchers (LLM-judged only) |
-| `@heilgar/pest-cli` | CLI: `install` (agents & skills) |
+| `@heilgar/pest-mcp` | MCP server testing: discovery matchers, `sendWithMcp()`, CLI QA |
+| `@heilgar/pest-cli` | CLI: `install` (agents & skills), `qa` (MCP smoke test) |
 
 ---
 

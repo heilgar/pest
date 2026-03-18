@@ -219,7 +219,7 @@ export default async function globalSetup() {
 
 Create a `.env.local` file (gitignored) with your API keys:
 
-```env
+```sh
 OPENAI_API_KEY=sk-...
 ANTHROPIC_API_KEY=sk-ant-...
 GOOGLE_API_KEY=AIza...
@@ -228,12 +228,12 @@ XAI_API_KEY=xai-...
 
 Or use `.env` if your team shares the same test keys:
 
-```env
+```sh
 # .env — committed, shared across team
 OPENAI_API_KEY=sk-test-shared-key
 ```
 
-```env
+```sh
 # .env.local — gitignored, personal overrides
 OPENAI_API_KEY=sk-my-personal-key
 ```

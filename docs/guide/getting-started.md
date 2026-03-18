@@ -32,38 +32,26 @@ npm install -D @heilgar/pest-playwright @heilgar/pest-core @playwright/test
 
 ```ts [vitest]
 // vitest.setup.ts
-import { loadEnv } from "@heilgar/pest-core";
-import { pestMatchers } from "@heilgar/pest-vitest";
-import { expect } from "vitest";
-
+import '@heilgar/pest-vitest/setup';  // registers matchers + reporter hooks
+import { loadEnv } from '@heilgar/pest-core';
 loadEnv();
-expect.extend(pestMatchers);
 ```
 
 ```ts [jest]
 // jest.setup.ts
-import { loadEnv } from "@heilgar/pest-core";
-import { pestMatchers } from "@heilgar/pest-jest";
-
+import { loadEnv } from '@heilgar/pest-core';
+import { pestMatchers } from '@heilgar/pest-jest';
 loadEnv();
-expect.extend(pestMatchers);
+expect.extend(pestMatchers as Record<string, unknown>);
 ```
 
 ```ts [playwright]
-// playwright.config.ts
-import { defineConfig } from "@playwright/test";
-import { pestMatchers } from "@heilgar/pest-playwright";
-import { expect } from "@playwright/test";
+// playwright.global-setup.ts
+import '@heilgar/pest-playwright/setup';
+import { setJudge, createProvider } from '@heilgar/pest-playwright';
 
-expect.extend(pestMatchers);
-
-export default defineConfig({
-  globalSetup: "./playwright.global-setup.ts",
-  use: {
-    baseURL: "http://localhost:3000",
-  },
-  timeout: 60_000,
-});
+// Set up judge for LLM-judged matchers
+setJudge(createProvider({ name: 'judge', type: 'openai', model: 'gpt-4o-mini' }));
 ```
 
 :::
@@ -74,11 +62,13 @@ Then reference the setup file in your config:
 
 ```ts [vitest]
 // vitest.config.ts
-import { defineConfig } from "vitest/config";
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
-    setupFiles: ["./vitest.setup.ts"],
+    setupFiles: ['./vitest.setup.ts'],
+    testTimeout: 30_000,
+    reporters: ['default', '@heilgar/pest-vitest/reporter'],
   },
 });
 ```
@@ -86,25 +76,20 @@ export default defineConfig({
 ```json [jest]
 // jest.config.json
 {
+  "testTimeout": 30000,
   "setupFiles": ["./jest.setup.ts"]
 }
 ```
 
 ```ts [playwright]
-// playwright.global-setup.ts
-import { setJudge } from "@heilgar/pest-playwright";
-import { createProvider, loadConfig } from "@heilgar/pest-core";
+// playwright.config.ts
+import { defineConfig } from '@playwright/test';
 
-export default async function globalSetup() {
-  const config = await loadConfig();
-  if (config.judge) {
-    setJudge(createProvider({
-      name: config.judge.provider,
-      type: "anthropic",
-      model: "claude-sonnet-4-20250514",
-    }));
-  }
-}
+export default defineConfig({
+  globalSetup: './playwright.global-setup.ts',
+  timeout: 60_000,
+  use: { baseURL: 'http://localhost:3000' },
+});
 ```
 
 :::
@@ -131,7 +116,7 @@ export default defineConfig({
 
 Set your API key in a `.env.local` file (add to `.gitignore`):
 
-```env
+```sh
 OPENAI_API_KEY=sk-...
 ```
 
@@ -328,64 +313,38 @@ export default defineConfig({
 });
 ```
 
-Then initialize the judge in your setup file:
+Then set the judge provider. `setJudge()` is global — call it once in setup, and all LLM-judged matchers will use it. You can override per-assertion with `{ judge: provider }`.
 
 ::: code-group
 
 ```ts [vitest]
 // vitest.setup.ts
-import { pestMatchers, setJudge } from "@heilgar/pest-vitest";
-import { createProvider, loadConfig } from "@heilgar/pest-core";
-import { expect, beforeAll } from "vitest";
+import '@heilgar/pest-vitest/setup';
+import { setJudge, createProvider } from '@heilgar/pest-core';
+import { loadEnv } from '@heilgar/pest-core';
 
-expect.extend(pestMatchers);
+loadEnv();
 
-beforeAll(async () => {
-  const config = await loadConfig();
-  if (config.judge) {
-    setJudge(createProvider({
-      name: config.judge.provider,
-      type: "anthropic",
-      model: "claude-sonnet-4-20250514",
-    }));
-  }
-});
+// Set judge for LLM-judged matchers (toMatchSemanticMeaning, toSatisfyCriteria, etc.)
+setJudge(createProvider({ name: 'judge', type: 'openai', model: 'gpt-4o-mini' }));
 ```
 
 ```ts [jest]
 // jest.setup.ts
-import { pestMatchers, setJudge } from "@heilgar/pest-jest";
-import { createProvider, loadConfig } from "@heilgar/pest-core";
+import { loadEnv, setJudge, createProvider } from '@heilgar/pest-core';
+import { pestMatchers } from '@heilgar/pest-jest';
 
-expect.extend(pestMatchers);
-
-beforeAll(async () => {
-  const config = await loadConfig();
-  if (config.judge) {
-    setJudge(createProvider({
-      name: config.judge.provider,
-      type: "anthropic",
-      model: "claude-sonnet-4-20250514",
-    }));
-  }
-});
+loadEnv();
+expect.extend(pestMatchers as Record<string, unknown>);
+setJudge(createProvider({ name: 'judge', type: 'openai', model: 'gpt-4o-mini' }));
 ```
 
 ```ts [playwright]
-// playwright.global-setup.ts
-import { setJudge } from "@heilgar/pest-playwright";
-import { createProvider, loadConfig } from "@heilgar/pest-core";
+// playwright.global-setup.ts — already configured above
+import '@heilgar/pest-playwright/setup';
+import { setJudge, createProvider } from '@heilgar/pest-playwright';
 
-export default async function globalSetup() {
-  const config = await loadConfig();
-  if (config.judge) {
-    setJudge(createProvider({
-      name: config.judge.provider,
-      type: "anthropic",
-      model: "claude-sonnet-4-20250514",
-    }));
-  }
-}
+setJudge(createProvider({ name: 'judge', type: 'openai', model: 'gpt-4o-mini' }));
 ```
 
 :::
@@ -577,4 +536,5 @@ When running vitest or jest directly, these helpers use defaults from config. Wh
 - [Configuration](/guide/configuration) — full config reference
 - [Examples](/guide/examples) — real-world testing patterns
 - [Matchers](/architecture/matchers) — complete matcher reference
-- [CLI](/reference/cli) — compare, optimize, compress commands
+- [MCP Extension](/extensions/mcp) — MCP server testing
+- [CLI](/reference/cli) — `pest install`, `pest qa --mcp`

@@ -1,6 +1,6 @@
 {
   "name": "@heilgar/pest-jest",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Prompt Evaluation & Scoring Toolkit - Jest integration",
   "type": "module",
   "main": "./dist/index.js",

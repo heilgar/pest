@@ -94,7 +94,7 @@ TypeScript is recommended — you get type checking and autocomplete.
 
 API keys are loaded from `.env` and `.env.local` files automatically (shell env takes precedence):
 
-```env
+```sh
 OPENAI_API_KEY=sk-...
 ANTHROPIC_API_KEY=sk-ant-...
 GOOGLE_API_KEY=AI...
@@ -125,6 +125,24 @@ setPrompts({ judge: 'Be extra strict about factual accuracy.' });
 |-----|---------|---------|
 | `judge` | `toSatisfyCriteria()` | Scores responses against criteria (0-1) |
 | `similarity` | `toMatchSemanticMeaning()` | Scores semantic similarity |
+
+## MCP servers
+
+Define MCP servers for testing with `@heilgar/pest-mcp`:
+
+```typescript
+export default defineConfig({
+  providers: [...],
+  mcp: {
+    servers: {
+      myServer: { command: 'npx', args: ['my-mcp-server'] },
+      remote: { transport: 'sse', url: 'http://localhost:3000/sse' },
+    },
+  },
+});
+```
+
+The `mcp` field is parsed by `@heilgar/pest-mcp`, not core. See [MCP Extension](/extensions/mcp) for details.
 
 ## Model pricing
 

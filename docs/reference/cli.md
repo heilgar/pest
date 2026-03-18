@@ -1,6 +1,6 @@
 # CLI Reference
 
-The pest CLI (`@heilgar/pest-cli`) provides project setup tools.
+The pest CLI (`@heilgar/pest-cli`) provides project setup and QA tools.
 
 ## Installation
 
@@ -36,6 +36,39 @@ pest install
 # Re-install (overwrite existing)
 pest install --force
 ```
+
+### `pest qa --mcp <server>`
+
+Run smoke tests against an MCP server defined in `pest.config.ts`. Requires `@heilgar/pest-mcp`.
+
+```bash
+pest qa --mcp myServer
+pest qa --mcp myServer --verbose
+```
+
+Validates: server startup, tool discovery, schema validity, prompts, resources, clean shutdown.
+
+| Option | Alias | Description |
+|---|---|---|
+| `--mcp` | | MCP server name from pest.config.ts (required) |
+| `--verbose` | `-v` | Show detailed output |
+
+Example output:
+
+```
+pest qa — myServer (npx my-mcp-server)
+
+  [pass] Server started and connected via stdio (1.2s)
+  [pass] tools/list: 3 tools (search, create, delete)
+  [pass] Tool schemas valid
+  [pass] prompts/list: 1 prompt (summarize)
+  [pass] resources/list: 0 resources
+  [pass] Server closed cleanly
+
+  Result: 6 passed, 0 failed
+```
+
+See [MCP Extension](/extensions/mcp) for full MCP testing docs.
 
 ## Running tests
 

@@ -8,6 +8,12 @@ export default defineConfig({
 
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: '/pest/logo.svg' }],
+    ['script', { async: '', src: 'https://www.googletagmanager.com/gtag/js?id=G-182N6335GG' }],
+    ['script', {}, `window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-182N6335GG');`]
   ],
 
   themeConfig: {
@@ -46,6 +52,7 @@ export default defineConfig({
           { text: 'Vitest', link: '/extensions/vitest' },
           { text: 'Jest', link: '/extensions/jest' },
           { text: 'Playwright', link: '/extensions/playwright' },
+          { text: 'MCP', link: '/extensions/mcp' },
         ],
       },
       {

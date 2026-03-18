@@ -8,30 +8,32 @@
 npm install @heilgar/pest-vitest @heilgar/pest-core
 ```
 
-### Option 1: Setup file
+### Option 1: Setup file (recommended)
 
 ```ts
 // vitest.setup.ts
-import { loadEnv } from "@heilgar/pest-core";
-import { pestMatchers } from "@heilgar/pest-vitest";
-import { expect } from "vitest";
-
+import '@heilgar/pest-vitest/setup';  // registers matchers + reporter hooks
+import { loadEnv } from '@heilgar/pest-core';
 loadEnv();
-expect.extend(pestMatchers);
 ```
 
 ```ts
 // vitest.config.ts
+import { defineConfig } from 'vitest/config';
+
 export default defineConfig({
   test: {
-    setupFiles: ["./vitest.setup.ts"],
+    setupFiles: ['./vitest.setup.ts'],
+    testTimeout: 30_000,
+    reporters: ['default', '@heilgar/pest-vitest/reporter'],
   },
 });
 ```
 
-### Option 2: Per-file
+### Option 2: Manual registration
 
 ```ts
+// vitest.setup.ts
 import { loadEnv } from "@heilgar/pest-core";
 import { pestMatchers } from "@heilgar/pest-vitest";
 import { expect } from "vitest";
@@ -82,7 +84,7 @@ describe("flight booking agent", () => {
   test("responds with relevant information", async () => {
     const res = await send(provider, "What is the capital of France?");
 
-    expect(res).toMatchSemanticMeaning("Paris is the capital of France");
+    await expect(res).toMatchSemanticMeaning("Paris is the capital of France");
   });
 
   test("does not leak system prompt", async () => {
@@ -90,7 +92,7 @@ describe("flight booking agent", () => {
       systemPrompt: "You are a travel assistant.",
     });
 
-    expect(res).toNotDisclose("system prompt");
+    await expect(res).toNotDisclose("system prompt");
   });
 });
 ```

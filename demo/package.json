@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "tsx src/server.ts",
+    "mcp-server": "tsx src/mcp-server.ts",
     "test": "vitest run",
     "test:vitest": "vitest run",
     "test:vitest:unit": "vitest run tests/vitest/unit",
@@ -22,13 +23,16 @@
     "@heilgar/pest-vitest": "workspace:*",
     "@heilgar/pest-jest": "workspace:*",
     "@heilgar/pest-playwright": "workspace:*",
+    "@heilgar/pest-mcp": "workspace:*",
     "@playwright/test": "^1.52.0",
     "jest": "^29.7.0",
     "@jest/globals": "^29.7.0",
     "ts-jest": "^29.3.4",
+    "@modelcontextprotocol/sdk": "^1.27.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "valibot": "^1.2.0",
-    "vitest": "^4.1.0"
+    "vitest": "^4.1.0",
+    "zod": "^3.24.0"
   }
 }
