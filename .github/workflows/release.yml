@@ -1,0 +1,58 @@
+name: Release
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  publish-npm:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org/
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm -r build
+
+      # Publish core first — dependents declare workspace:* on it
+      - name: Publish core
+        run: |
+          pkg="packages/core/package.json"
+          name=$(node -p "require('./$pkg').name")
+          version=$(node -p "require('./$pkg').version")
+          if npm view "$name@$version" version 2>/dev/null; then
+            echo "Skipping $name@$version (already published)"
+          else
+            echo "Publishing $name@$version"
+            cd packages/core
+            pnpm publish --access public --no-git-checks --provenance
+          fi
+
+      # Publish remaining packages (vitest, jest, playwright, cli)
+      - name: Publish dependent packages
+        run: |
+          for pkg in packages/vitest/package.json packages/jest/package.json packages/playwright/package.json packages/cli/package.json; do
+            [ -f "$pkg" ] || continue
+            dir=$(dirname "$pkg")
+            name=$(node -p "require('./$pkg').name")
+            version=$(node -p "require('./$pkg').version")
+            if npm view "$name@$version" version 2>/dev/null; then
+              echo "Skipping $name@$version (already published)"
+            else
+              echo "Publishing $name@$version"
+              (cd "$dir" && pnpm publish --access public --no-git-checks --provenance)
+            fi
+          done

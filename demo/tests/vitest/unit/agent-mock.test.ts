@@ -1,4 +1,4 @@
-import { describe, test, expect } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { mockResponse } from '../../helpers.js';
 
 describe('agent tool routing (mocked)', () => {
@@ -15,17 +15,24 @@ describe('agent tool routing (mocked)', () => {
   test('product question calls get_product_info', () => {
     const res = mockResponse({
       text: 'Here is the product info.',
-      toolCalls: [{ name: 'get_product_info', args: { product: 'Widget Pro' } }],
+      toolCalls: [
+        { name: 'get_product_info', args: { product: 'Widget Pro' } },
+      ],
     });
 
-    expect(res).toContainToolCall('get_product_info', { product: 'Widget Pro' });
+    expect(res).toContainToolCall('get_product_info', {
+      product: 'Widget Pro',
+    });
   });
 
   test('refund request looks up order then processes refund', () => {
     const res = mockResponse({
       toolCalls: [
         { name: 'lookup_order', args: { order_id: 'ORD-12345' } },
-        { name: 'process_refund', args: { order_id: 'ORD-12345', reason: 'defective' } },
+        {
+          name: 'process_refund',
+          args: { order_id: 'ORD-12345', reason: 'defective' },
+        },
       ],
     });
 

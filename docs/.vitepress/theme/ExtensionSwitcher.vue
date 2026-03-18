@@ -1,90 +1,107 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
-import { useExtension, type Extension } from './useExtension'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { type Extension, useExtension } from './useExtension';
 
-const { selectedExtension } = useExtension()
-const isOpen = ref(false)
-const containerRef = ref<HTMLElement | null>(null)
+const { selectedExtension } = useExtension();
+const isOpen = ref(false);
+const containerRef = ref<HTMLElement | null>(null);
 
-const VALID_EXTENSIONS: Extension[] = ['vitest', 'jest', 'playwright']
+const VALID_EXTENSIONS: Extension[] = ['vitest', 'jest', 'playwright'];
 
 // Dropdown → code-group tabs: click the matching label in every code group on the page
 watch(selectedExtension, (ext) => {
-  const scrollY = window.scrollY
-  const scrollX = window.scrollX
+  const scrollY = window.scrollY;
+  const scrollX = window.scrollX;
 
   document
-    .querySelectorAll<HTMLLabelElement>(`.vp-code-group .tabs label[data-title="${ext}"]`)
-    .forEach(label => label.click())
+    .querySelectorAll<HTMLLabelElement>(
+      `.vp-code-group .tabs label[data-title="${ext}"]`,
+    )
+    .forEach((label) => label.click());
 
-  window.scrollTo(scrollX, scrollY)
-})
+  window.scrollTo(scrollX, scrollY);
+});
 
 // Code-group tabs → dropdown: update extension when user clicks a tab
 function handleTabClick(e: MouseEvent) {
-  const label = (e.target as Element).closest<HTMLLabelElement>('.vp-code-group .tabs label')
-  if (!label) return
-  const title = label.dataset.title?.toLowerCase() as Extension | undefined
-  if (!title || !VALID_EXTENSIONS.includes(title)) return
-  if (title === selectedExtension.value) return  // already in sync
-  selectedExtension.value = title
+  const label = (e.target as Element).closest<HTMLLabelElement>(
+    '.vp-code-group .tabs label',
+  );
+  if (!label) return;
+  const title = label.dataset.title?.toLowerCase() as Extension | undefined;
+  if (!title || !VALID_EXTENSIONS.includes(title)) return;
+  if (title === selectedExtension.value) return; // already in sync
+  selectedExtension.value = title;
 }
 
 interface SelectableItem {
-  id: Extension
-  label: string
-  color: string
-  disabled?: false
-  comingSoon?: false
+  id: Extension;
+  label: string;
+  color: string;
+  disabled?: false;
+  comingSoon?: false;
 }
 
 interface DisabledItem {
-  id: string
-  label: string
-  color: string
-  disabled: true
-  comingSoon: true
+  id: string;
+  label: string;
+  color: string;
+  disabled: true;
+  comingSoon: true;
 }
 
-type ExtensionItem = SelectableItem | DisabledItem
+type ExtensionItem = SelectableItem | DisabledItem;
 
 const extensions: ExtensionItem[] = [
-  { id: 'vitest',     label: 'vitest',     color: '#6E9F18' },
-  { id: 'jest',       label: 'jest',       color: '#C21325' },
+  { id: 'vitest', label: 'vitest', color: '#6E9F18' },
+  { id: 'jest', label: 'jest', color: '#C21325' },
   { id: 'playwright', label: 'playwright', color: '#2EAD33' },
-  { id: 'pytest',     label: 'pytest',     color: '#0A9EDC', disabled: true, comingSoon: true },
-  { id: 'phpunit',    label: 'phpunit',    color: '#8892BF', disabled: true, comingSoon: true },
-]
+  {
+    id: 'pytest',
+    label: 'pytest',
+    color: '#0A9EDC',
+    disabled: true,
+    comingSoon: true,
+  },
+  {
+    id: 'phpunit',
+    label: 'phpunit',
+    color: '#8892BF',
+    disabled: true,
+    comingSoon: true,
+  },
+];
 
-const current = computed(() =>
-  extensions.find(e => e.id === selectedExtension.value) ?? extensions[0]
-)
+const current = computed(
+  () =>
+    extensions.find((e) => e.id === selectedExtension.value) ?? extensions[0],
+);
 
 function select(ext: ExtensionItem) {
-  if (ext.disabled) return
-  selectedExtension.value = ext.id as Extension
-  isOpen.value = false
+  if (ext.disabled) return;
+  selectedExtension.value = ext.id as Extension;
+  isOpen.value = false;
 }
 
 function toggle() {
-  isOpen.value = !isOpen.value
+  isOpen.value = !isOpen.value;
 }
 
 function handleClickOutside(e: MouseEvent) {
   if (containerRef.value && !containerRef.value.contains(e.target as Node)) {
-    isOpen.value = false
+    isOpen.value = false;
   }
 }
 
 onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
-  document.addEventListener('click', handleTabClick)
-})
+  document.addEventListener('click', handleClickOutside);
+  document.addEventListener('click', handleTabClick);
+});
 
 onUnmounted(() => {
-  document.removeEventListener('click', handleClickOutside)
-  document.removeEventListener('click', handleTabClick)
-})
+  document.removeEventListener('click', handleClickOutside);
+  document.removeEventListener('click', handleTabClick);
+});
 </script>
 
 <template>

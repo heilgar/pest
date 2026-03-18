@@ -1,11 +1,14 @@
-import { createServer } from 'node:http';
 import { readFileSync } from 'node:fs';
+import { createServer } from 'node:http';
 import { resolve } from 'node:path';
 import { chat } from './agent.js';
 
 const PORT = Number(process.env.PORT ?? 3210);
 
-const html = readFileSync(resolve(import.meta.dirname, 'public/index.html'), 'utf-8');
+const html = readFileSync(
+  resolve(import.meta.dirname, 'public/index.html'),
+  'utf-8',
+);
 
 const server = createServer(async (req, res) => {
   if (req.method === 'GET' && req.url === '/') {
@@ -30,11 +33,14 @@ const server = createServer(async (req, res) => {
         }
       }
 
-      const preview = response.text.length > 120
-        ? `${response.text.slice(0, 120)}...`
-        : response.text;
+      const preview =
+        response.text.length > 120
+          ? `${response.text.slice(0, 120)}...`
+          : response.text;
       console.log(`  Response: "${preview}"`);
-      console.log(`  Tokens: ${response.usage.inputTokens} in / ${response.usage.outputTokens} out | ${response.latencyMs.toFixed(0)}ms`);
+      console.log(
+        `  Tokens: ${response.usage.inputTokens} in / ${response.usage.outputTokens} out | ${response.latencyMs.toFixed(0)}ms`,
+      );
 
       let text = response.text;
       if (!text && response.toolCalls.length > 0) {
@@ -44,10 +50,12 @@ const server = createServer(async (req, res) => {
       }
 
       res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({
-        text,
-        toolCalls: response.toolCalls,
-      }));
+      res.end(
+        JSON.stringify({
+          text,
+          toolCalls: response.toolCalls,
+        }),
+      );
     } catch (err) {
       console.error(`  Error: ${err}`);
       res.writeHead(500, { 'Content-Type': 'application/json' });

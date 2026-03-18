@@ -7,7 +7,9 @@ const describeIf = hasKey ? describe : describe.skip;
 
 describeIf('acme store agent — jest', () => {
   test('looks up order when asked', async () => {
-    const res = await chat('I need the details for order ORD-12345. What did I order?');
+    const res = await chat(
+      'I need the details for order ORD-12345. What did I order?',
+    );
 
     expect(res).toContainToolCall('lookup_order');
   });
