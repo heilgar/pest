@@ -1,6 +1,6 @@
 {
   "name": "@heilgar/pest-vitest",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Prompt Evaluation & Scoring Toolkit - Vitest integration",
   "type": "module",
   "main": "./dist/index.js",
