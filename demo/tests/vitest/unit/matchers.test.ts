@@ -1,5 +1,5 @@
-import { describe, test, expect } from 'vitest';
 import * as v from 'valibot';
+import { describe, expect, test } from 'vitest';
 import { mockResponse } from '../../helpers.js';
 
 describe('toContainToolCall', () => {
@@ -26,7 +26,9 @@ describe('toContainToolCall', () => {
     const res = mockResponse({
       toolCalls: [{ name: 'search', args: { query: 'other' } }],
     });
-    expect(() => expect(res).toContainToolCall('search', { query: 'pest' })).toThrow();
+    expect(() =>
+      expect(res).toContainToolCall('search', { query: 'pest' }),
+    ).toThrow();
   });
 
   test('negation: passes when tool is absent', () => {
@@ -64,7 +66,9 @@ describe('toCallToolsInOrder', () => {
         { name: 'lookup', args: {} },
       ],
     });
-    expect(() => expect(res).toCallToolsInOrder(['lookup', 'refund'])).toThrow();
+    expect(() =>
+      expect(res).toCallToolsInOrder(['lookup', 'refund']),
+    ).toThrow();
   });
 });
 
@@ -114,12 +118,16 @@ describe('toContainText / toNotContainText', () => {
 
 describe('toRespondWithinTokens', () => {
   test('passes when within budget', () => {
-    const res = mockResponse({ usage: { inputTokens: 100, outputTokens: 50, totalTokens: 150 } });
+    const res = mockResponse({
+      usage: { inputTokens: 100, outputTokens: 50, totalTokens: 150 },
+    });
     expect(res).toRespondWithinTokens(100);
   });
 
   test('fails when over budget', () => {
-    const res = mockResponse({ usage: { inputTokens: 100, outputTokens: 200, totalTokens: 300 } });
+    const res = mockResponse({
+      usage: { inputTokens: 100, outputTokens: 200, totalTokens: 300 },
+    });
     expect(() => expect(res).toRespondWithinTokens(100)).toThrow();
   });
 });
@@ -133,7 +141,11 @@ describe('toMatchResponseSchema', () => {
 
   test('passes with valid JSON matching schema', () => {
     const res = mockResponse({
-      text: JSON.stringify({ name: 'Pancakes', servings: 4, ingredients: ['flour', 'eggs'] }),
+      text: JSON.stringify({
+        name: 'Pancakes',
+        servings: 4,
+        ingredients: ['flour', 'eggs'],
+      }),
     });
     expect(res).toMatchResponseSchema(RecipeSchema);
   });

@@ -1,11 +1,13 @@
-import { describe, test, expect } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { chat } from '../../../src/agent.js';
 
 const hasKey = !!process.env.OPENAI_API_KEY;
 
 describe.skipIf(!hasKey)('acme store agent', () => {
   test('looks up order when asked about an order', async () => {
-    const res = await chat('I need the details for order ORD-12345. What did I order and what is the status?');
+    const res = await chat(
+      'I need the details for order ORD-12345. What did I order and what is the status?',
+    );
 
     expect(res).toContainToolCall('lookup_order');
   });

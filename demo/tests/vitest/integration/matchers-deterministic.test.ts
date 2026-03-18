@@ -1,5 +1,5 @@
-import { describe, test, expect } from 'vitest';
-import { send, createProvider } from '@heilgar/pest-core';
+import { createProvider, send } from '@heilgar/pest-core';
+import { describe, expect, test } from 'vitest';
 
 const hasKey = !!process.env.OPENAI_API_KEY;
 
@@ -7,7 +7,8 @@ const provider = hasKey
   ? createProvider({ name: 'gpt4o-mini', type: 'openai', model: 'gpt-4o-mini' })
   : (null as any);
 
-const systemPrompt = 'You are a helpful travel assistant. Use the provided tools to help users.';
+const systemPrompt =
+  'You are a helpful travel assistant. Use the provided tools to help users.';
 
 const tools = [
   {
@@ -70,9 +71,13 @@ describe.skipIf(!hasKey)('deterministic matchers with real LLM', () => {
   });
 
   test('toContainText', async () => {
-    const res = await send(provider, 'What is the capital of France? Answer in one word.', {
-      systemPrompt: 'Answer factual questions concisely.',
-    });
+    const res = await send(
+      provider,
+      'What is the capital of France? Answer in one word.',
+      {
+        systemPrompt: 'Answer factual questions concisely.',
+      },
+    );
 
     expect(res).toContainText('Paris');
   });

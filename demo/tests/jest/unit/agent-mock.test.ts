@@ -16,7 +16,10 @@ describe('agent tool routing (mocked) — jest', () => {
     const res = mockResponse({
       toolCalls: [
         { name: 'lookup_order', args: { order_id: 'ORD-12345' } },
-        { name: 'process_refund', args: { order_id: 'ORD-12345', reason: 'defective' } },
+        {
+          name: 'process_refund',
+          args: { order_id: 'ORD-12345', reason: 'defective' },
+        },
       ],
     });
 

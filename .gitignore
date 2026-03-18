@@ -1,4 +1,13 @@
 **/node_modules/**
+**/dist/
 docs/.vitepress/cache
-docs/.vitepress/dist
+.env
+.env.local
+pest-report.html
+pest-results.json
+pest-log.json
+package-lock.json
+.DS_Store
+**/test-results/
+**/pest-log.json
 

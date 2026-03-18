@@ -4,7 +4,9 @@ import type { PestResponse } from '@heilgar/pest-core';
  * Create a mock PestResponse for unit testing matchers.
  * No LLM call needed — just construct the shape.
  */
-export function mockResponse(overrides: Partial<PestResponse> = {}): PestResponse {
+export function mockResponse(
+  overrides: Partial<PestResponse> = {},
+): PestResponse {
   return {
     text: '',
     toolCalls: [],

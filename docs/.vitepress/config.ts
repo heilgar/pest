@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitepress'
+import { defineConfig } from 'vitepress';
 
 export default defineConfig({
   title: 'pest',
@@ -68,9 +68,7 @@ export default defineConfig({
       provider: 'local',
     },
 
-    socialLinks: [
-      { icon: 'github', link: 'https://github.com/heilgar/pest' },
-    ],
+    socialLinks: [{ icon: 'github', link: 'https://github.com/heilgar/pest' }],
 
     footer: {
       message: 'Released under the MIT License.',
@@ -82,4 +80,4 @@ export default defineConfig({
       text: 'Edit this page on GitHub',
     },
   },
-})
+});
