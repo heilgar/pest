@@ -7,11 +7,13 @@ export interface McpStdioServerConfig {
 export interface McpSseServerConfig {
   transport: 'sse';
   url: string;
+  headers?: Record<string, string>;
 }
 
 export interface McpHttpServerConfig {
   transport: 'http';
   url: string;
+  headers?: Record<string, string>;
 }
 
 export type McpServerConfig =
