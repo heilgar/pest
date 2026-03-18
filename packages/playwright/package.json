@@ -1,0 +1,48 @@
+{
+  "name": "@heilgar/pest-playwright",
+  "version": "0.0.1",
+  "description": "Prompt Evaluation & Scoring Toolkit - Playwright integration",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./setup": {
+      "import": "./dist/setup.js",
+      "types": "./dist/setup.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "tsc --noEmit"
+  },
+  "keywords": [
+    "llm",
+    "prompt",
+    "testing",
+    "playwright",
+    "e2e",
+    "evaluation",
+    "ai"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@heilgar/pest-core": "workspace:*"
+  },
+  "peerDependencies": {
+    "@playwright/test": ">=1.40.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^25.5.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
+  }
+}
