@@ -17,11 +17,13 @@ const McpStdioServerSchema = v.object({
 const McpSseServerSchema = v.object({
   transport: v.literal('sse'),
   url: v.string(),
+  headers: v.optional(v.record(v.string(), v.string())),
 });
 
 const McpHttpServerSchema = v.object({
   transport: v.literal('http'),
   url: v.string(),
+  headers: v.optional(v.record(v.string(), v.string())),
 });
 
 const McpServerConfigSchema = v.union([

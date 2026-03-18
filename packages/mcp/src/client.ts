@@ -35,9 +35,13 @@ export class McpClient {
     let transport: StdioClientTransport | SSEClientTransport | StreamableHTTPClientTransport;
 
     if ('transport' in config && config.transport === 'sse') {
-      transport = new SSEClientTransport(new URL(config.url));
+      transport = new SSEClientTransport(new URL(config.url), {
+        requestInit: config.headers ? { headers: config.headers } : undefined,
+      });
     } else if ('transport' in config && config.transport === 'http') {
-      transport = new StreamableHTTPClientTransport(new URL(config.url));
+      transport = new StreamableHTTPClientTransport(new URL(config.url), {
+        requestInit: config.headers ? { headers: config.headers } : undefined,
+      });
     } else {
       transport = new StdioClientTransport({
         command: config.command,
