@@ -1,0 +1,50 @@
+{
+  "name": "@heilgar/pest-jest",
+  "version": "0.0.1",
+  "description": "Prompt Evaluation & Scoring Toolkit - Jest integration",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./setup": {
+      "import": "./dist/setup.js",
+      "types": "./dist/setup.d.ts"
+    },
+    "./reporter": {
+      "import": "./dist/reporter.js",
+      "types": "./dist/reporter.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "tsc --noEmit"
+  },
+  "keywords": [
+    "llm",
+    "prompt",
+    "testing",
+    "jest",
+    "evaluation",
+    "ai"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@heilgar/pest-core": "workspace:*"
+  },
+  "peerDependencies": {
+    "jest": ">=29.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
+  }
+}

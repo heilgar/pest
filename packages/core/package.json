@@ -1,0 +1,53 @@
+{
+  "name": "@heilgar/pest-core",
+  "version": "0.0.1",
+  "description": "Prompt Evaluation & Scoring Toolkit - Core library",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest",
+    "lint": "tsc --noEmit"
+  },
+  "keywords": [
+    "llm",
+    "prompt",
+    "testing",
+    "evaluation",
+    "ai"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.78.0",
+    "@google/genai": "^1.45.0",
+    "openai": "^6.29.0",
+    "valibot": "^1.2.0",
+    "zod-to-json-schema": "^3.25.1"
+  },
+  "peerDependencies": {
+    "zod": ">=3.24.0"
+  },
+  "peerDependenciesMeta": {
+    "zod": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0",
+    "zod": "^3.24.0"
+  }
+}
