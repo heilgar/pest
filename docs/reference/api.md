@@ -50,6 +50,38 @@ const provider = createProvider({
 });
 ```
 
+### `sendAgentic(provider, message, options?)`
+
+Multi-turn agentic loop. Automatically executes tool calls via a `ToolExecutor` and continues the conversation until the model responds with text (no more tool calls) or `maxSteps` is reached.
+
+```typescript
+import { sendAgentic } from '@heilgar/pest-vitest';
+
+const res = await sendAgentic(provider, 'Book a flight to Paris', {
+  systemPrompt: 'You are a travel agent.',
+  tools: [...],
+  executor: async (name, args) => {
+    // handle tool calls, return result
+    return { status: 'booked', confirmation: 'ABC123' };
+  },
+  maxSteps: 10, // default: 10
+});
+```
+
+### `zodTool(name, description, schema)`
+
+Create a `ToolDefinition` from a Zod schema.
+
+```typescript
+import { zodTool } from '@heilgar/pest-vitest';
+import { z } from 'zod';
+
+const tool = zodTool('search_flights', 'Search for flights', z.object({
+  destination: z.string(),
+  date: z.string().optional(),
+}));
+```
+
 ### `setJudge(provider)`
 
 Set the global judge provider for LLM-judged matchers.
@@ -113,7 +145,9 @@ export default {
 
 ### Exports
 
-`send`, `createProvider`, `createProviders`, `loadConfig`, `defineConfig`, `assertConsistent`, `setJudge` — same signatures as `@heilgar/pest-vitest`.
+`send`, `createProvider`, `createProviders`, `loadConfig`, `defineConfig`, `assertConsistent`, `setJudge`, `pestMatchers`, `PestReporter` — same signatures as `@heilgar/pest-vitest`.
+
+Jest does not re-export `sendAgentic` or `zodTool` — import those from `@heilgar/pest-core` if needed.
 
 Jest now includes full test lifecycle hooks and accumulator support, matching vitest parity for matcher recording.
 
@@ -171,10 +205,6 @@ export default defineConfig({
   judge?: {
     provider: string;             // Which provider judges LLM-judged matchers
   };
-  prompts?: {
-    judge?: string;               // Custom judge evaluation prompt
-    similarity?: string;          // Custom semantic similarity prompt
-  };
   pricing?: Record<string, {      // Custom model pricing
     inputCentsPer1M: number;
     outputCentsPer1M: number;
@@ -194,6 +224,37 @@ const res = await send(provider, 'Hello', {
   maxTokens: 1000,
   responseFormat: 'json',
 });
+```
+
+### `sendAgentic(provider, message, options?)`
+
+Multi-turn agentic loop. Executes tool calls via a `ToolExecutor` callback and continues until the model responds with text or `maxSteps` is reached. All tool calls across steps are accumulated in the response.
+
+```typescript
+import { sendAgentic } from '@heilgar/pest-core';
+
+const res = await sendAgentic(provider, 'Book a flight to Paris', {
+  systemPrompt: 'You are a travel agent.',
+  tools: [...],
+  executor: async (name, args) => {
+    return { status: 'booked' };
+  },
+  maxSteps: 10, // default: 10
+});
+```
+
+### `zodTool(name, description, schema)`
+
+Create a `ToolDefinition` from a Zod schema. Requires `zod` as a peer dependency.
+
+```typescript
+import { zodTool } from '@heilgar/pest-core';
+import { z } from 'zod';
+
+const tool = zodTool('search_flights', 'Search for flights', z.object({
+  destination: z.string(),
+  date: z.string().optional(),
+}));
 ```
 
 ### `createProvider(config)` / `createProviders(configs)`
@@ -235,28 +296,6 @@ resetPricing();
 ```
 
 Built-in pricing includes: GPT-4o, GPT-4o-mini, GPT-4.1, o1/o3, Claude Sonnet/Opus/Haiku, Gemini 2.0/2.5, Grok 3 variants.
-
-### Prompts API
-
-```typescript
-import { setPrompts, getPrompts, resetPrompts } from '@heilgar/pest-core';
-
-// Override pest's internal prompts
-setPrompts({ judge: 'Your custom judge prompt...' });
-
-// Get currently active prompts
-const prompts = getPrompts();
-
-// Restore defaults
-resetPrompts();
-```
-
-Available prompt keys:
-
-| Key | Used by | Purpose |
-|-----|---------|---------|
-| `judge` | `toSatisfyCriteria()` | Scores responses against criteria (0-1) |
-| `similarity` | `toMatchSemanticMeaning()` | Scores semantic similarity (1-5) |
 
 ### Judge API
 

@@ -18,7 +18,7 @@ The minimum shared foundation that any test framework extension needs.
 | Responsibility | Description |
 |---|---|
 | **Providers** | Abstraction over OpenAI, Anthropic, Google, xAI, Ollama SDKs |
-| **`send()`** | Explicit provider call — `send(provider, message, options)` |
+| **`send()` / `sendAgentic()`** | Single-turn and multi-turn agentic provider calls |
 | **Types** | Response shapes, tool call types, provider config, matcher result types |
 | **Matcher logic** | Pure functions that evaluate assertions — return `{ pass, message }` |
 | **Evaluators** | LLM-as-judge functions — async functions that return scores/booleans |
@@ -83,11 +83,12 @@ await expect(page.locator('.ai-response')).toNotDisclose("system prompt");
 
 ## CLI (`@heilgar/pest-cli`)
 
-Project setup tool:
+Project setup and QA tools:
 
 | Command | Description |
 |---|---|
 | `pest install` | Install Claude Code agents and skills for pest |
+| `pest qa --mcp <server>` | Smoke-test an MCP server (startup, discovery, schema, shutdown) |
 
 The CLI installs agent templates (test writer, test healer) and a skill (test generator) into `.claude/`. Tests are run directly via vitest or jest — the CLI does not have its own runner.
 

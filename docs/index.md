@@ -28,7 +28,7 @@ features:
   - title: Works with your test runner
     details: "Thin extensions for vitest, jest, and Playwright. expect.extend(pestMatchers) — no custom runner, no config magic."
   - title: CLI tools
-    details: "Compare models, generate test cases, optimize and compress prompts — standalone operations that don't belong in unit tests."
+    details: "pest install sets up Claude Code agents and skills. pest qa --mcp smoke-tests MCP servers — startup, discovery, schema validation, shutdown."
 ---
 
 ## Quick start
