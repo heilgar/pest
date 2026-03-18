@@ -45,12 +45,6 @@ export default defineConfig({
     provider: 'gpt4o',       // which provider judges LLM-judged matchers
   },
 
-  // --- Custom prompts (optional) ---
-  prompts: {
-    judge: '...',             // custom judge evaluation prompt
-    similarity: '...',        // custom semantic similarity prompt
-  },
-
   // --- Model pricing (optional) ---
   pricing: {
     'my-custom-model': {
@@ -102,29 +96,6 @@ XAI_API_KEY=xai-...
 ```
 
 You can also set `apiKey` explicitly in provider config.
-
-## Custom prompts
-
-pest uses LLM prompts internally for judging. Override in config or programmatically:
-
-```typescript
-// In config
-export default defineConfig({
-  providers: [...],
-  prompts: {
-    judge: 'You are a strict evaluator...',
-  },
-});
-
-// Or programmatically
-import { setPrompts } from '@heilgar/pest-core';
-setPrompts({ judge: 'Be extra strict about factual accuracy.' });
-```
-
-| Key | Used by | Purpose |
-|-----|---------|---------|
-| `judge` | `toSatisfyCriteria()` | Scores responses against criteria (0-1) |
-| `similarity` | `toMatchSemanticMeaning()` | Scores semantic similarity |
 
 ## MCP servers
 

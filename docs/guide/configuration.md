@@ -59,7 +59,7 @@ export default defineConfig({
     provider: "claude", // must match a provider name above
   },
 
-  // Custom model pricing (overrides built-in defaults)
+  // Custom model pricing overrides built-in defaults
   pricing: {
     "my-custom-model": {
       inputCentsPer1M: 100,

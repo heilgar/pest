@@ -63,6 +63,49 @@ interface ToolCall {
 }
 ```
 
+## `sendAgentic(provider, message, options?)`
+
+Multi-turn agentic loop built on top of `send()`. Automatically handles tool call → executor → result cycles until the model responds with text (no more tool calls) or `maxSteps` is reached.
+
+```ts
+import { sendAgentic, createProvider } from "@heilgar/pest-core";
+
+const provider = createProvider({
+  name: "gpt4o",
+  type: "openai",
+  model: "gpt-4o",
+});
+
+const res = await sendAgentic(provider, "Book a flight to Paris", {
+  systemPrompt: "You are a travel agent.",
+  tools: [...],
+  executor: async (name, args) => {
+    // Execute the tool and return a result
+    if (name === "search_flights") return { flights: [...] };
+    if (name === "book_flight") return { confirmation: "ABC123" };
+  },
+  maxSteps: 10, // default: 10
+});
+
+// res.toolCalls contains ALL tool calls across all steps
+```
+
+### SendAgenticOptions
+
+```ts
+interface SendAgenticOptions extends SendOptions {
+  executor?: ToolExecutor;
+  maxSteps?: number; // Default: 10
+}
+
+type ToolExecutor = (
+  name: string,
+  args: Record<string, unknown>,
+) => Promise<unknown> | unknown;
+```
+
+The response accumulates all tool calls from every step, so matchers like `toContainToolCall` and `toCallToolsInOrder` work across the full agentic conversation.
+
 ## `createProvider(config)`
 
 Factory function that creates a provider instance. Picks the right SDK based on `type`.
@@ -251,9 +294,25 @@ const prompt = useSystemPrompt("You are a helpful assistant.");
 
 Useful for scripts or CI pipelines that need to test different prompts without modifying test files.
 
+## `zodTool(name, description, schema)`
+
+Helper to create a `ToolDefinition` from a Zod schema. Converts the Zod schema to JSON Schema internally. Requires `zod` as a peer dependency.
+
+```ts
+import { zodTool } from "@heilgar/pest-core";
+import { z } from "zod";
+
+const tool = zodTool("search_flights", "Search for flights", z.object({
+  destination: z.string(),
+  date: z.string().optional(),
+}));
+
+const res = await send(provider, "Find flights to Paris", { tools: [tool] });
+```
+
 ## Tool Definitions
 
-For testing tool-calling models:
+For testing tool-calling models with manual definitions:
 
 ```ts
 import { send, createProvider } from "@heilgar/pest-core";

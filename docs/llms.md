@@ -43,7 +43,7 @@ This document is a table of contents for LLMs helping users write tests with pes
   - Combining matchers
 
 ### Configuration
-- **[Configuration Guide](/guide/configuration)** — `pest.config.ts` setup, provider config, judge config, pricing, prompts
+- **[Configuration Guide](/guide/configuration)** — `pest.config.ts` setup, provider config, judge config, pricing
 - **[Configuration Reference](/reference/configuration)** — Complete config schema
 
 ### CLI
