@@ -1,6 +1,6 @@
 {
   "name": "@heilgar/pest-vitest",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Prompt Evaluation & Scoring Toolkit - Vitest integration",
   "type": "module",
   "main": "./dist/index.js",
@@ -44,12 +44,12 @@
     "@heilgar/pest-core": "workspace:*"
   },
   "peerDependencies": {
-    "vitest": ">=2.0.0"
+    "vitest": ">=2.0.0 <4.0.0"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
-    "vitest": "^4.1.0"
+    "vitest": "^3.0.0"
   }
 }
