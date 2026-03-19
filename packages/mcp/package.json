@@ -1,6 +1,6 @@
 {
   "name": "@heilgar/pest-mcp",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Prompt Evaluation & Scoring Toolkit - MCP server testing",
   "type": "module",
   "main": "./dist/index.js",
@@ -37,7 +37,7 @@
     "valibot": "^1.2.0"
   },
   "peerDependencies": {
-    "vitest": ">=2.0.0",
+    "vitest": ">=2.0.0 <4.0.0",
     "jest": ">=29.0.0"
   },
   "peerDependenciesMeta": {
@@ -48,6 +48,6 @@
     "@types/node": "^25.5.0",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
-    "vitest": "^4.1.0"
+    "vitest": "^3.0.0"
   }
 }

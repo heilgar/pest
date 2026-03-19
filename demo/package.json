@@ -1,6 +1,6 @@
 {
   "name": "@pest/demo",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "description": "Demo project — Acme Store chat agent with pest test examples",
   "type": "module",
@@ -32,7 +32,7 @@
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "valibot": "^1.2.0",
-    "vitest": "^4.1.0",
+    "vitest": "^3.0.0",
     "zod": "^3.24.0"
   }
 }

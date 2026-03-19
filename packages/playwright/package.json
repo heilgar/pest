@@ -1,6 +1,6 @@
 {
   "name": "@heilgar/pest-playwright",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Prompt Evaluation & Scoring Toolkit - Playwright integration",
   "type": "module",
   "main": "./dist/index.js",
