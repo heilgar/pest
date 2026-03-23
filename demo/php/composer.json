@@ -1,0 +1,19 @@
+{
+  "name": "pest/demo-php",
+  "description": "PHP demo for pest-llm",
+  "require-dev": {
+    "heilgar/pest-llm": "dev-main",
+    "phpunit/phpunit": "^11.0"
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Demo\\Tests\\": "tests/"
+    }
+  },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "../../packages/pest-llm"
+    }
+  ]
+}

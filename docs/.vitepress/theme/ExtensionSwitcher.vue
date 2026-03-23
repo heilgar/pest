@@ -6,7 +6,7 @@ const { selectedExtension } = useExtension();
 const isOpen = ref(false);
 const containerRef = ref<HTMLElement | null>(null);
 
-const VALID_EXTENSIONS: Extension[] = ['vitest', 'jest', 'playwright'];
+const VALID_EXTENSIONS: Extension[] = ['vitest', 'jest', 'playwright', 'phpunit'];
 
 // Dropdown → code-group tabs: click the matching label in every code group on the page
 watch(selectedExtension, (ext) => {
@@ -63,13 +63,7 @@ const extensions: ExtensionItem[] = [
     disabled: true,
     comingSoon: true,
   },
-  {
-    id: 'phpunit',
-    label: 'phpunit',
-    color: '#8892BF',
-    disabled: true,
-    comingSoon: true,
-  },
+  { id: 'phpunit', label: 'phpunit', color: '#8892BF' },
 ];
 
 const current = computed(

@@ -21,7 +21,14 @@ export default defineConfig({
       { text: 'Guide', link: '/guide/getting-started' },
       { text: 'Architecture', link: '/architecture/packages' },
       { text: 'Reference', link: '/architecture/matchers' },
-      { text: 'Demo', link: 'https://github.com/heilgar/pest/tree/main/demo' },
+      {
+        text: 'Demo',
+        items: [
+          { text: 'JavaScript', link: 'https://github.com/heilgar/pest/tree/main/demo/js' },
+          { text: 'PHP', link: 'https://github.com/heilgar/pest/tree/main/demo/php' },
+        ],
+      },
+      { text: 'llms.txt', link: '/llms' },
       {
         text: 'GitHub',
         link: 'https://github.com/heilgar/pest',
@@ -52,6 +59,7 @@ export default defineConfig({
           { text: 'Vitest', link: '/extensions/vitest' },
           { text: 'Jest', link: '/extensions/jest' },
           { text: 'Playwright', link: '/extensions/playwright' },
+          { text: 'PHPUnit', link: '/extensions/phpunit' },
           { text: 'MCP', link: '/extensions/mcp' },
         ],
       },

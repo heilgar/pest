@@ -12,23 +12,23 @@ importers:
         specifier: ^2.4.7
         version: 2.4.7
 
-  demo:
+  demo/js:
     devDependencies:
       '@heilgar/pest-core':
         specifier: workspace:*
-        version: link:../packages/core
+        version: link:../../packages/core
       '@heilgar/pest-jest':
         specifier: workspace:*
-        version: link:../packages/jest
+        version: link:../../packages/jest
       '@heilgar/pest-mcp':
         specifier: workspace:*
-        version: link:../packages/mcp
+        version: link:../../packages/mcp
       '@heilgar/pest-playwright':
         specifier: workspace:*
-        version: link:../packages/playwright
+        version: link:../../packages/playwright
       '@heilgar/pest-vitest':
         specifier: workspace:*
-        version: link:../packages/vitest
+        version: link:../../packages/vitest
       '@jest/globals':
         specifier: ^29.7.0
         version: 29.7.0
@@ -68,6 +68,15 @@ importers:
 
   packages/cli:
     dependencies:
+      '@heilgar/pest-core':
+        specifier: workspace:*
+        version: link:../core
+      '@heilgar/pest-mcp':
+        specifier: workspace:*
+        version: link:../mcp
+      ajv:
+        specifier: ^8.18.0
+        version: 8.18.0
       citty:
         specifier: ^0.2.1
         version: 0.2.1

@@ -1,102 +1,25 @@
-import { existsSync } from 'node:fs';
-import { resolve } from 'node:path';
-import { pathToFileURL } from 'node:url';
-import { loadEnv } from '@heilgar/pest-core';
-import * as v from 'valibot';
+import { loadConfig } from '@heilgar/pest-core';
 import { McpClient } from './client.js';
 import type { McpServerConfig } from './types.js';
-
-const CONFIG_FILES = ['pest.config.ts', 'pest.config.js', 'pest.config.mjs'];
-
-const McpStdioServerSchema = v.object({
-  command: v.string(),
-  args: v.optional(v.array(v.string())),
-  env: v.optional(v.record(v.string(), v.string())),
-});
-
-const McpSseServerSchema = v.object({
-  transport: v.literal('sse'),
-  url: v.string(),
-});
-
-const McpHttpServerSchema = v.object({
-  transport: v.literal('http'),
-  url: v.string(),
-});
-
-const McpServerConfigSchema = v.union([
-  McpStdioServerSchema,
-  McpSseServerSchema,
-  McpHttpServerSchema,
-]);
-
-const McpConfigSchema = v.object({
-  servers: v.record(v.string(), McpServerConfigSchema),
-});
 
 export interface McpConfig {
   servers: Record<string, McpServerConfig>;
 }
 
 /**
- * Load the MCP config section from pest.config.ts.
- * Loads the raw config file independently from core's loadConfig()
- * because core's valibot schema strips unknown keys.
+ * Load the MCP config section from pest.config.ts via core's loadConfig().
+ * The `mcp` field is now part of PestConfigSchema so no keys are stripped.
  */
 export async function loadMcpConfig(cwd: string = process.cwd()): Promise<McpConfig> {
-  loadEnv(cwd);
+  const config = await loadConfig(cwd);
 
-  let configPath: string | undefined;
-  for (const file of CONFIG_FILES) {
-    const candidate = resolve(cwd, file);
-    if (existsSync(candidate)) {
-      configPath = candidate;
-      break;
-    }
-  }
-
-  if (!configPath) {
+  if (!config.mcp) {
     throw new Error(
-      `No pest config found. Create one of: ${CONFIG_FILES.join(', ')}`,
+      'No "mcp" section found in pest config. Add mcp.servers to your config.',
     );
   }
 
-  const configUrl = pathToFileURL(configPath).href;
-  let mod: Record<string, unknown>;
-  try {
-    mod = await import(configUrl);
-  } catch (err) {
-    if (
-      configPath.endsWith('.ts') &&
-      (err as NodeJS.ErrnoException).code === 'ERR_UNKNOWN_FILE_EXTENSION'
-    ) {
-      throw new Error(
-        `Cannot import TypeScript config "${configPath}".\n` +
-          'Run with tsx (npx tsx ...) or use pest.config.js / pest.config.mjs instead.',
-      );
-    }
-    throw err;
-  }
-
-  const raw = (mod.default ?? mod) as Record<string, unknown>;
-  const mcpRaw = raw.mcp;
-
-  if (!mcpRaw) {
-    throw new Error(
-      'No "mcp" section found in pest config. Add mcp.servers to pest.config.ts.',
-    );
-  }
-
-  const result = v.safeParse(McpConfigSchema, mcpRaw);
-  if (!result.success) {
-    const issues = v.flatten(result.issues);
-    const messages = Object.entries(issues.nested ?? {})
-      .map(([path, errors]) => `  ${path}: ${(errors ?? []).join(', ')}`)
-      .join('\n');
-    throw new Error(`Invalid MCP config:\n${messages}`);
-  }
-
-  return result.output;
+  return config.mcp as McpConfig;
 }
 
 // --- Connection cache ---

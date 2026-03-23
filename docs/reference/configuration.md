@@ -78,11 +78,14 @@ export default defineConfig({
 
 pest looks for config files in this order:
 
-1. `pest.config.ts`
+1. `pest.config.ts` (TypeScript -- requires tsx or similar loader)
 2. `pest.config.js`
 3. `pest.config.mjs`
+4. `pest.config.json` (universal -- works with PHP, CLI, and any language)
 
-TypeScript is recommended — you get type checking and autocomplete.
+TypeScript is recommended for JavaScript projects -- you get type checking and autocomplete. Use `pest.config.json` for PHP projects or cross-language setups.
+
+See [Configuration guide](/guide/configuration#json-config) for JSON config details and environment variable interpolation.
 
 ## Environment variables
 
