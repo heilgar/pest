@@ -70,6 +70,42 @@ pest qa — myServer (npx my-mcp-server)
 
 See [MCP Extension](/extensions/mcp) for full MCP testing docs.
 
+### `pest eval [files...]`
+
+Run multi-model evaluation suites. Discovers `*.eval.ts` files and runs each case against configured providers, producing comparison results.
+
+```bash
+pest eval
+pest eval ./eval/customer-support.eval.ts
+pest eval --provider gpt4o,claude-sonnet
+pest eval --html eval-report.html --json eval-results.json
+```
+
+| Option | Alias | Description |
+|---|---|---|
+| `files` | | Eval suite file path (default: discovers all `*.eval.ts`) |
+| `--provider` | `-p` | Filter to specific provider(s), comma-separated |
+| `--json` | | Write JSON results to path |
+| `--html` | | Write HTML comparison report to path |
+| `--config` | `-c` | Path to pest config file (default: auto-detected) |
+| `--verbose` | `-v` | Show detailed output |
+
+Example output:
+
+```
+pest eval - customer-support (5 cases, 3 providers)
+
+  Provider             Score    Pass     Latency      Cost
+  ----------------------------------------------------------
+  gpt4o                0.87     9/10     1.2s avg     $0.0300
+  claude-sonnet        0.92     10/10    1.8s avg     $0.0400
+  gemini-flash         0.81     8/10     0.6s avg     $0.0100
+```
+
+The command returns exit code 1 if any provider scores below 0.5, making it suitable for CI pipelines.
+
+See [Multi-Model Eval](/guide/eval) for the full guide on writing eval suites.
+
 ### `pest exec`
 
 Execute pest operations via a JSON protocol over stdin/stdout. This is the bridge used by non-JavaScript integrations (e.g. [PHPUnit](/extensions/phpunit)) to access pest's core functionality.

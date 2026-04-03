@@ -49,7 +49,7 @@ This document is a table of contents for LLMs helping users write tests with pes
 - **[Configuration Reference](/reference/configuration)** — Complete config schema
 
 ### CLI
-- **[CLI Reference](/reference/cli)** — `pest install`, `pest qa --mcp`, `pest exec` commands
+- **[CLI Reference](/reference/cli)** — `pest install`, `pest qa --mcp`, `pest eval`, `pest exec` commands
 
 ### Architecture
 - **[Core API](/architecture/core-api)** — Internal architecture of pest-core
@@ -66,7 +66,7 @@ This document is a table of contents for LLMs helping users write tests with pes
 | `packages/jest` | `@heilgar/pest-jest` | jest matchers + setup |
 | `packages/playwright` | `@heilgar/pest-playwright` | Playwright LLM-judged matchers for locators/strings |
 | `packages/mcp` | `@heilgar/pest-mcp` | MCP server testing: `useMcpServer()`, `sendWithMcp()`, discovery matchers |
-| `packages/cli` | `@heilgar/pest-cli` | CLI: `pest install`, `pest qa --mcp`, `pest exec` |
+| `packages/cli` | `@heilgar/pest-cli` | CLI: `pest install`, `pest qa --mcp`, `pest eval`, `pest exec` |
 | `packages/pest-llm` | `heilgar/pest-llm` (Composer) | PHPUnit assertions via CLI bridge |
 
 ---
@@ -108,3 +108,12 @@ This document is a table of contents for LLMs helping users write tests with pes
 
 ### How do I run a quick MCP server check?
 -> `pest qa --mcp <serverName>`. See [CLI Reference](/reference/cli)
+
+### How do I compare multiple LLM providers against the same test cases?
+-> Use `defineEval` to define an eval suite (`.eval.ts` file), then run `pest eval`. See [Multi-Model Eval](/guide/eval) and [CLI Reference](/reference/cli#pest-eval)
+
+### How do I write an eval suite?
+-> Create a `*.eval.ts` file using `defineEval({ cases: [...], providers: [...], scorers: [...] })`. Each case defines an input and expected criteria; scorers assess each provider response. See [Multi-Model Eval](/guide/eval)
+
+### How do I export eval results to JSON or HTML?
+-> Pass `--json <path>` and/or `--html <path>` to `pest eval`. See [CLI Reference](/reference/cli#pest-eval)

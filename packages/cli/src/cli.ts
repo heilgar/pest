@@ -4,6 +4,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineCommand, runMain } from 'citty';
 import { execCommand } from './commands/exec.js';
+import { evalCommand } from './commands/eval.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const pkg = JSON.parse(
@@ -444,6 +445,7 @@ const main = defineCommand({
     install: installCommand,
     qa: qaCommand,
     exec: execCommand,
+    eval: evalCommand,
   },
 });
 

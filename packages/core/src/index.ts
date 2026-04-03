@@ -107,3 +107,29 @@ export {
 export { buildHtmlReport } from './report-html.js';
 // @internal — used by vitest/jest/playwright extensions
 export { onSend } from './send.js';
+
+// Eval
+export {
+  defineEval,
+  runEval,
+  buildEvalHtmlReport,
+  writeEvalHtml,
+  writeEvalJson,
+  printCaseProgress,
+  printProviderResult,
+  printSummary,
+} from './eval/index.js';
+export type {
+  RunEvalOptions,
+  CaseResult,
+  EvalCase,
+  EvalCaseDefaults,
+  EvalOutput,
+  EvalSuite,
+  EvalSuiteFactory,
+  MatcherResultEntry,
+  MatcherSpec,
+  ProviderCaseResult,
+  ProviderSummary,
+  RubricResultEntry,
+} from './eval/index.js';
