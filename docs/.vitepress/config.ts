@@ -43,6 +43,7 @@ export default defineConfig({
           { text: 'Configuration', link: '/guide/configuration' },
           { text: 'Examples', link: '/guide/examples' },
           { text: 'Local LLMs', link: '/guide/local-llms' },
+          { text: 'Multi-Model Eval', link: '/guide/eval' },
         ],
       },
       {
