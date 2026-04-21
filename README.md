@@ -146,7 +146,7 @@ describe('Support Agent', {
 
 ## Documentation
 
-Full documentation: [pest.dev](https://pest.dev) (coming soon)
+Full documentation: [https://thewebland.net/pest/](https://thewebland.net/pest/)
 
 ## License
 
