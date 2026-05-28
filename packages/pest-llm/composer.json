@@ -1,0 +1,21 @@
+{
+  "name": "heilgar/pest-llm",
+  "description": "PHPUnit assertions for testing LLM prompts via @heilgar/pest abstraction",
+  "type": "library",
+  "license": "MIT",
+  "require": {
+    "php": "^8.2",
+    "phpunit/phpunit": "^10.0 || ^11.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "PestLlm\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "PestLlm\\Tests\\": "tests/"
+    }
+  },
+  "minimum-stability": "stable"
+}

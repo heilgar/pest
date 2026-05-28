@@ -1,9 +1,9 @@
 import { ref, watch } from 'vue';
 
-export type Extension = 'vitest' | 'jest' | 'playwright';
+export type Extension = 'vitest' | 'jest' | 'playwright' | 'phpunit';
 
 const STORAGE_KEY = 'pest-extension';
-const VALID_EXTENSIONS: Extension[] = ['vitest', 'jest', 'playwright'];
+const VALID_EXTENSIONS: Extension[] = ['vitest', 'jest', 'playwright', 'phpunit'];
 
 // Module-level singleton — shared across all components
 export const selectedExtension = ref<Extension>('vitest');

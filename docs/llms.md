@@ -7,7 +7,8 @@ This document is a table of contents for LLMs helping users write tests with pes
 ## Quick Navigation
 
 ### Setup & Installation
-- **[Getting Started](/guide/getting-started)** — Installation, setup, writing first tests for vitest/jest/playwright
+- **[Getting Started](/guide/getting-started)** — Installation, setup, writing first tests for vitest/jest/playwright/phpunit
+- **[PHPUnit Integration](/extensions/phpunit)** — PHP-specific setup, assertions, MCP testing, and CLI bridge configuration
 
 ### API Reference
 - **[API Reference](/reference/api)** — Complete API docs for all packages:
@@ -28,6 +29,7 @@ This document is a table of contents for LLMs helping users write tests with pes
 - **[Vitest](/extensions/vitest)** — vitest setup, plugin, reporter
 - **[Jest](/extensions/jest)** — jest setup, reporter
 - **[Playwright](/extensions/playwright)** — Playwright LLM-judged matchers for locators/strings
+- **[PHPUnit](/extensions/phpunit)** — PHP integration via pest-llm, CLI bridge, AssertLlm trait
 - **[MCP](/extensions/mcp)** — MCP server testing: discovery, tool execution, LLM+MCP e2e
 
 ### Examples & Patterns
@@ -43,11 +45,11 @@ This document is a table of contents for LLMs helping users write tests with pes
   - Combining matchers
 
 ### Configuration
-- **[Configuration Guide](/guide/configuration)** — `pest.config.ts` setup, provider config, judge config, pricing
+- **[Configuration Guide](/guide/configuration)** — `pest.config.ts` / `pest.config.json` setup, provider config, judge config, pricing, env var interpolation
 - **[Configuration Reference](/reference/configuration)** — Complete config schema
 
 ### CLI
-- **[CLI Reference](/reference/cli)** — `pest install`, `pest qa --mcp` commands
+- **[CLI Reference](/reference/cli)** — `pest install`, `pest qa --mcp`, `pest exec` commands
 
 ### Architecture
 - **[Core API](/architecture/core-api)** — Internal architecture of pest-core
@@ -64,7 +66,8 @@ This document is a table of contents for LLMs helping users write tests with pes
 | `packages/jest` | `@heilgar/pest-jest` | jest matchers + setup |
 | `packages/playwright` | `@heilgar/pest-playwright` | Playwright LLM-judged matchers for locators/strings |
 | `packages/mcp` | `@heilgar/pest-mcp` | MCP server testing: `useMcpServer()`, `sendWithMcp()`, discovery matchers |
-| `packages/cli` | `@heilgar/pest-cli` | CLI: `pest install`, `pest qa --mcp` |
+| `packages/cli` | `@heilgar/pest-cli` | CLI: `pest install`, `pest qa --mcp`, `pest exec` |
+| `packages/pest-llm` | `heilgar/pest-llm` (Composer) | PHPUnit assertions via CLI bridge |
 
 ---
 
@@ -97,5 +100,11 @@ This document is a table of contents for LLMs helping users write tests with pes
 ### How do I configure MCP servers?
 → Add `mcp.servers` to `pest.config.ts`. See [Configuration](/reference/configuration) and [MCP Extension](/extensions/mcp)
 
+### How do I test with PHPUnit?
+-> See [PHPUnit Integration](/extensions/phpunit) for installation, `AssertLlm` trait, and all PHP assertions
+
+### How do I use pest from PHP or other languages?
+-> `pest exec` reads JSON from stdin and returns JSON to stdout. See [CLI Reference](/reference/cli#pest-exec)
+
 ### How do I run a quick MCP server check?
-→ `pest qa --mcp <serverName>`. See [CLI Reference](/reference/cli)
+-> `pest qa --mcp <serverName>`. See [CLI Reference](/reference/cli)

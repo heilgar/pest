@@ -1,0 +1,12 @@
+{
+  "providers": [
+    {
+      "name": "gpt4o-mini",
+      "type": "openai",
+      "model": "gpt-4o-mini"
+    }
+  ],
+  "judge": {
+    "provider": "gpt4o-mini"
+  }
+}

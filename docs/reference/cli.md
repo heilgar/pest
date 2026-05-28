@@ -1,6 +1,6 @@
 # CLI Reference
 
-The pest CLI (`@heilgar/pest-cli`) provides project setup and QA tools.
+The pest CLI (`@heilgar/pest-cli`) provides project setup, QA tools, and a JSON protocol bridge for cross-language integrations.
 
 ## Installation
 
@@ -69,6 +69,92 @@ pest qa — myServer (npx my-mcp-server)
 ```
 
 See [MCP Extension](/extensions/mcp) for full MCP testing docs.
+
+### `pest exec`
+
+Execute pest operations via a JSON protocol over stdin/stdout. This is the bridge used by non-JavaScript integrations (e.g. [PHPUnit](/extensions/phpunit)) to access pest's core functionality.
+
+```bash
+echo '{"method":"send","params":{...}}' | pest exec [--config <path>]
+```
+
+| Option | Alias | Description |
+|---|---|---|
+| `--config` | `-c` | Path to pest config file (default: auto-detected) |
+
+The command reads a JSON request from stdin, executes the operation, and writes a JSON response to stdout. All console output is suppressed during execution to keep stdout clean.
+
+**Methods:**
+
+| Method | Description |
+|---|---|
+| `send` | Single-turn LLM call |
+| `sendWithMcp` | MCP-backed agentic call |
+| `match` | Run a matcher against a response |
+
+**Request format:**
+
+```json
+{
+  "version": "1",
+  "method": "send",
+  "params": {
+    "provider": "gpt4o",
+    "message": "Find flights to Paris",
+    "systemPrompt": "You are a travel assistant.",
+    "tools": [],
+    "temperature": 0.7,
+    "maxTokens": 1000
+  }
+}
+```
+
+**Response format (success):**
+
+```json
+{
+  "success": true,
+  "result": {
+    "text": "I found flights...",
+    "toolCalls": [{ "name": "search", "args": { "query": "Paris" } }],
+    "usage": { "inputTokens": 150, "outputTokens": 80, "totalTokens": 230 },
+    "latencyMs": 1200,
+    "provider": "openai",
+    "model": "gpt-4o-mini"
+  }
+}
+```
+
+**Response format (error):**
+
+```json
+{
+  "success": false,
+  "error": { "code": "PROVIDER_ERROR", "message": "Invalid API key" }
+}
+```
+
+**Match request example:**
+
+```json
+{
+  "method": "match",
+  "params": {
+    "matcher": "satisfiesCriteria",
+    "response": { "text": "...", "toolCalls": [], "usage": {}, "latencyMs": 0 },
+    "args": { "rubric": "Accurate and helpful", "passThreshold": 0.7 },
+    "judge": "claude-sonnet"
+  }
+}
+```
+
+Available matchers via exec: `satisfiesCriteria`, `matchesSemanticMeaning`, `classifiedAs`, `doesNotDisclose`, `matchesResponseSchema`.
+
+The `judge` field is optional in match requests. If omitted, the judge configured in `pest.config.json` is used.
+
+The exec command is stateless and safe for concurrent invocation (e.g. parallel PHPUnit via paratest).
+
+See [PHPUnit Integration](/extensions/phpunit) for the primary consumer of this command.
 
 ## Running tests
 

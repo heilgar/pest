@@ -24,6 +24,9 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "@heilgar/pest-core": "workspace:*",
+    "@heilgar/pest-mcp": "workspace:*",
+    "ajv": "^8.18.0",
     "citty": "^0.2.1"
   },
   "devDependencies": {
