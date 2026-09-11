@@ -1,11 +1,23 @@
 # Configuration
 
-pest uses a `pest.config.ts` file in your project root. It defines providers and judge settings.
+pest uses a config file in your project root. It defines providers, judge settings, MCP servers, and pricing.
+
+## Config file formats
+
+pest supports two config formats. The lookup order is:
+
+1. `pest.config.ts` (TypeScript -- requires tsx or similar loader)
+2. `pest.config.js`
+3. `pest.config.mjs`
+4. `pest.config.json` (universal -- works with PHP, CLI, and any language)
+
+The first file found is used. TypeScript configs take precedence over JSON.
 
 ## Minimal config
 
-```ts
-// pest.config.ts
+::: code-group
+
+```ts [pest.config.ts]
 import { defineConfig } from "@heilgar/pest-core";
 
 export default defineConfig({
@@ -14,6 +26,16 @@ export default defineConfig({
   ],
 });
 ```
+
+```json [pest.config.json]
+{
+  "providers": [
+    { "name": "gpt4o", "type": "openai", "model": "gpt-4o" }
+  ]
+}
+```
+
+:::
 
 ## Full config
 
@@ -69,6 +91,59 @@ export default defineConfig({
 
 });
 ```
+
+## JSON config
+
+`pest.config.json` is the universal config format that works across all language integrations (TypeScript, PHP). It supports environment variable interpolation:
+
+```json
+{
+  "providers": [
+    {
+      "name": "gpt4o",
+      "type": "openai",
+      "model": "gpt-4o",
+      "apiKey": "${OPENAI_API_KEY}"
+    },
+    {
+      "name": "claude",
+      "type": "anthropic",
+      "model": "claude-sonnet-4-20250514"
+    }
+  ],
+  "judge": {
+    "provider": "claude"
+  },
+  "mcp": {
+    "servers": {
+      "my-server": {
+        "command": "npx",
+        "args": ["tsx", "src/mcp-server.ts"]
+      }
+    }
+  }
+}
+```
+
+### Environment variable interpolation
+
+Use `${VAR_NAME}` in any JSON string value. Undefined variables resolve to an empty string. Escape with `\${VAR}` for a literal.
+
+```json
+{
+  "providers": [
+    {
+      "name": "gpt4o",
+      "type": "openai",
+      "model": "gpt-4o",
+      "apiKey": "${OPENAI_API_KEY}",
+      "baseUrl": "${OPENAI_BASE_URL}"
+    }
+  ]
+}
+```
+
+Note: Even without explicit interpolation, the provider SDKs read standard env vars (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, etc.) automatically. Interpolation is primarily useful for custom setups.
 
 ## Providers
 

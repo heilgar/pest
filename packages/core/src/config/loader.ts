@@ -2,9 +2,15 @@ import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import * as v from 'valibot';
+import { loadJsonConfig } from './json-loader.js';
 import { type PestConfig, PestConfigSchema } from './schema.js';
 
-const CONFIG_FILES = ['pest.config.ts', 'pest.config.js', 'pest.config.mjs'];
+const CONFIG_FILES = ['pest.config.ts', 'pest.config.js', 'pest.config.mjs', 'pest.config.json'];
+
+export interface LoadConfigOptions {
+  /** Explicit path to a config file. Overrides automatic discovery. */
+  configFile?: string;
+}
 
 // .env files in priority order (lowest first — higher priority files overwrite)
 const ENV_FILES = ['.env', '.env.local'];
@@ -83,16 +89,25 @@ export function loadEnv(cwd: string = process.cwd()): void {
 
 export async function loadConfig(
   cwd: string = process.cwd(),
+  options?: LoadConfigOptions,
 ): Promise<PestConfig> {
   loadEnv(cwd);
 
   let configPath: string | undefined;
 
-  for (const file of CONFIG_FILES) {
-    const candidate = resolve(cwd, file);
-    if (existsSync(candidate)) {
-      configPath = candidate;
-      break;
+  if (options?.configFile) {
+    const resolved = resolve(cwd, options.configFile);
+    if (!existsSync(resolved)) {
+      throw new Error(`Config file not found: ${resolved}`);
+    }
+    configPath = resolved;
+  } else {
+    for (const file of CONFIG_FILES) {
+      const candidate = resolve(cwd, file);
+      if (existsSync(candidate)) {
+        configPath = candidate;
+        break;
+      }
     }
   }
 
@@ -102,23 +117,29 @@ export async function loadConfig(
     );
   }
 
-  const configUrl = pathToFileURL(configPath).href;
-  let mod: Record<string, unknown>;
-  try {
-    mod = await import(configUrl);
-  } catch (err) {
-    if (
-      configPath.endsWith('.ts') &&
-      (err as NodeJS.ErrnoException).code === 'ERR_UNKNOWN_FILE_EXTENSION'
-    ) {
-      throw new Error(
-        `Cannot import TypeScript config "${configPath}".\n` +
-          'Run with tsx (npx tsx ...) or use pest.config.js / pest.config.mjs instead.',
-      );
+  let raw: unknown;
+
+  if (configPath.endsWith('.json')) {
+    raw = loadJsonConfig(configPath);
+  } else {
+    const configUrl = pathToFileURL(configPath).href;
+    let mod: Record<string, unknown>;
+    try {
+      mod = await import(configUrl);
+    } catch (err) {
+      if (
+        configPath.endsWith('.ts') &&
+        (err as NodeJS.ErrnoException).code === 'ERR_UNKNOWN_FILE_EXTENSION'
+      ) {
+        throw new Error(
+          `Cannot import TypeScript config "${configPath}".\n` +
+            'Run with tsx (npx tsx ...) or use pest.config.js / pest.config.mjs instead.',
+        );
+      }
+      throw err;
     }
-    throw err;
+    raw = mod.default ?? mod;
   }
-  const raw = mod.default ?? mod;
 
   const result = v.safeParse(PestConfigSchema, raw);
 

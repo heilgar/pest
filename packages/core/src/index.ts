@@ -7,7 +7,13 @@ export {
   loadEnv,
   resetEnv,
 } from './config/loader.js';
-export type { PestConfig, ProviderConfig } from './config/schema.js';
+export type { LoadConfigOptions } from './config/loader.js';
+export type {
+  McpConfigFromSchema,
+  McpServerConfigFromSchema,
+  PestConfig,
+  ProviderConfig,
+} from './config/schema.js';
 export type { JudgeResult } from './evaluator/judge.js';
 // Helpers
 export { useProvider, useSystemPrompt } from './helpers.js';

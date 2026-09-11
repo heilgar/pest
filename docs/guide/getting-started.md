@@ -5,7 +5,7 @@ This guide walks you through setting up pest and writing your first prompt test.
 ## Prerequisites
 
 - Node.js 18+
-- A test runner: [vitest](https://vitest.dev/), [jest](https://jestjs.io/), or [Playwright](https://playwright.dev/)
+- A test runner: [vitest](https://vitest.dev/), [jest](https://jestjs.io/), [Playwright](https://playwright.dev/), or [PHPUnit](https://phpunit.de/) (PHP 8.2+)
 - An API key for at least one LLM provider (OpenAI, Anthropic, Google, etc.)
 
 ## Installation
@@ -24,7 +24,15 @@ npm install -D @heilgar/pest-jest @heilgar/pest-core jest
 npm install -D @heilgar/pest-playwright @heilgar/pest-core @playwright/test
 ```
 
+```bash [phpunit]
+composer require --dev heilgar/pest-llm
+npm install -D @heilgar/pest-cli @heilgar/pest-core
+```
+
 :::
+
+::: tip PHPUnit users
+See the dedicated [PHPUnit guide](/extensions/phpunit) for PHP-specific setup, assertions, and configuration.
 
 ## Register matchers
 
@@ -534,7 +542,8 @@ When running vitest or jest directly, these helpers use defaults from config. Wh
 ## Next steps
 
 - [Configuration](/guide/configuration) — full config reference
+- [PHPUnit](/extensions/phpunit) — PHP integration via pest-llm
 - [Examples](/guide/examples) — real-world testing patterns
 - [Matchers](/architecture/matchers) — complete matcher reference
 - [MCP Extension](/extensions/mcp) — MCP server testing
-- [CLI](/reference/cli) — `pest install`, `pest qa --mcp`
+- [CLI](/reference/cli) — `pest install`, `pest qa --mcp`, `pest exec`
